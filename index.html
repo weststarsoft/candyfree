@@ -274,11 +274,12 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 /* ===== ACTION BAR ===== */
 .action-bar{display:flex;gap:10px;justify-content:flex-end;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border-subtle);}
 .btn-outline{
-  padding:10px 22px;border-radius:9px;border:1.5px solid rgba(255,255,255,0.28);
-  background:rgba(255,255,255,0.06);color:#ccc;font-family:'DM Sans',sans-serif;
+  padding:10px 22px;border-radius:9px;border:2px solid rgba(255,255,255,0.55);
+  background:rgba(255,255,255,0.15);color:#fff;font-family:'DM Sans',sans-serif;
   font-size:13px;cursor:pointer;transition:all 0.2s;font-weight:500;
+  backdrop-filter:blur(4px);
 }
-.btn-outline:hover{color:#fff;border-color:var(--pink-border);background:rgba(255,111,216,0.08);}
+.btn-outline:hover{color:#fff;border-color:rgba(255,111,216,0.8);background:rgba(255,111,216,0.18);}
 .btn-primary{
   padding:10px 28px;border-radius:9px;border:none;
   background:linear-gradient(135deg,var(--pink),var(--cyan));
@@ -600,8 +601,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
     <div class="mode-bar">
       <span class="mode-label">Modo</span>
       <div class="mode-btns">
-        <button class="mode-btn active" onclick="setMode('manual')">✏ Manual</button>
-        <button class="mode-btn" onclick="setMode('suggestive')">◈ Sugestivo</button>
+        <button class="mode-btn active" onclick="setMode('suggestive')">◈ Sugestivo</button>
         <button class="mode-btn" onclick="setMode('auto')">⚡ Automático</button>
       </div>
     </div>
@@ -1062,6 +1062,7 @@ let currentSceneResult='';
 
 // ===== INIT =====
 function init(){
+  currentMode='suggestive';
   buildFields(ROSTO_FIELDS,'grid-rosto');
   buildFields(CORPO_FIELDS,'grid-corpo');
   updateSelects();
@@ -1098,10 +1099,11 @@ function buildFields(fields,gridId){
 // ===== MODE =====
 function setMode(m){
   currentMode=m;
-  document.querySelectorAll('.mode-btn').forEach((b,i)=>b.classList.toggle('active',['manual','suggestive','auto'][i]===m));
+  document.querySelectorAll('.mode-btn').forEach((b,i)=>b.classList.toggle('active',['suggestive','auto'][i]===m));
   document.getElementById('directionBar').style.display=m==='auto'?'flex':'none';
   buildFields(ROSTO_FIELDS,'grid-rosto');
   buildFields(CORPO_FIELDS,'grid-corpo');
+  liveUpdateIdentity();
 }
 
 // ===== SECTION TOGGLE =====
@@ -1189,7 +1191,7 @@ async function generateAuto(){
     currentMode='suggestive';
     buildFields(ROSTO_FIELDS,'grid-rosto');
     buildFields(CORPO_FIELDS,'grid-corpo');
-    document.querySelectorAll('.mode-btn').forEach((b,i)=>b.classList.toggle('active',i===1));
+    document.querySelectorAll('.mode-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
 
     [...ROSTO_FIELDS,...CORPO_FIELDS].forEach(f=>{
       const el=document.getElementById('field_'+f.key);
@@ -1452,7 +1454,7 @@ function loadModel(id){
   currentMode='suggestive';
   buildFields(ROSTO_FIELDS,'grid-rosto');
   buildFields(CORPO_FIELDS,'grid-corpo');
-  document.querySelectorAll('.mode-btn').forEach((b,i)=>b.classList.toggle('active',i===1));
+  document.querySelectorAll('.mode-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
   [...ROSTO_FIELDS,...CORPO_FIELDS].forEach(f=>{
     const el=document.getElementById('field_'+f.key);
     if(el&&m.data[f.key]) el.value=m.data[f.key];
