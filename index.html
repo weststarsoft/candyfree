@@ -1149,7 +1149,7 @@ Important:
 
 const PROMPT_ROSTO_SHORT=`Ultra-realistic facial reference sheet, 9-frame contact sheet (3x3 grid). Same female influencer, all angles (front, 45° left/right, profiles, chin up/down, over-shoulder, smile). Studio softbox lighting, 85mm portrait lens, 8K resolution, soft glam makeup. Preserve exact facial identity.`;
 
-const PROMPT_SELFIE_BASE=`Ultra-realistic selfie photo of [NAME]. Front-facing camera perspective, arm slightly extended toward lens. Natural facial expression, relaxed and spontaneous mood. Slight perspective distortion typical of phone lens. Face and upper body clearly visible.
+const PROMPT_SELFIE_BASE=`Ultra-realistic selfie photo of [NAME]. Front-facing camera perspective, arm slightly extended toward lens. Natural facial expression, relaxed and spontaneous mood. Slight perspective distortion typical of phone lens. Face and upper body clearly visible. No mirror. No reflection. Direct selfie only.
 
 📱 IMAGE QUALITY
 • Shot as if taken with an iPhone
@@ -1260,7 +1260,12 @@ function setTab(t){
     if(id===t) el.classList.remove('tab-content'), void el.offsetWidth, el.classList.add('tab-content');
   });
   document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',['create','prompts','styles','models'][i]===t));
-  if(t==='prompts') updatePrompts();
+  if(t==='prompts'){
+    updatePrompts();
+    currentSceneResult='';
+    const sr=document.getElementById('sceneResult');
+    if(sr) sr.textContent='O prompt de selfie aparecerá aqui...';
+  }
   if(t==='models') renderModels();
   if(t==='styles') renderStyles();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1349,6 +1354,7 @@ async function generateScene(){
   const btn=document.querySelector('[onclick="generateScene()"]');
   const orig=btn.textContent;
   btn.textContent='Gerando...';btn.disabled=true;
+  currentSceneResult='';
   document.getElementById('sceneResult').textContent='Gerando prompt de selfie...';
 
   try{
@@ -1358,7 +1364,7 @@ async function generateScene(){
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:300,
-        system:'You are an expert at writing scene descriptions for AI image generation of virtual influencers. Write a single concise paragraph in English describing the environment, outfit, lighting and mood. Be specific and visual. No bullet points, no titles, no instructions — just a flowing scene description.',
+        system:'You are an expert at writing scene descriptions for AI image generation of virtual influencers. Write a single concise paragraph in English describing the environment, outfit, lighting and mood. Be specific and visual. No bullet points, no titles, no instructions — just a flowing scene description. IMPORTANT: Never describe a mirror selfie or reflection. The photo is always a direct selfie with arm extended toward camera.',
         messages:[{role:'user',content:`Write a scene description in English for a selfie photo of a virtual influencer.\n\nContext (pt-BR): ${ctx}`}]
       })
     });
