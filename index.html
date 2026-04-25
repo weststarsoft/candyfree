@@ -685,17 +685,9 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
         <span class="badge badge-custom">Validação</span>
       </div>
       <div class="scene-body">
-        <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
-          <div>
-            <div class="field-label" style="margin-bottom:6px;">Modelo</div>
-            <select class="scene-model-sel" id="sceneModelSel">
-              <option value="">Nenhuma</option>
-            </select>
-          </div>
-          <div style="flex:1;min-width:200px;">
-            <div class="field-label" style="margin-bottom:6px;">Ambiente e look (pt-BR)</div>
-            <textarea class="scene-context-input" id="sceneContext" placeholder="Ex: café minimalista, look casual bege, manhã de domingo..."></textarea>
-          </div>
+        <div style="margin-bottom:10px;">
+          <div class="field-label" style="margin-bottom:6px;">Ambiente e look (pt-BR)</div>
+          <textarea class="scene-context-input" id="sceneContext" placeholder="Ex: café minimalista, look casual bege, manhã de domingo..." style="width:100%;min-height:80px;"></textarea>
         </div>
         <div style="display:flex;gap:8px;margin-bottom:1rem;">
           <button class="gen-btn" style="flex:1;" onclick="generateScene()">📱 Gerar Selfie Prompt</button>
@@ -1352,9 +1344,7 @@ async function generateScene(){
   const ctx=document.getElementById('sceneContext').value.trim();
   if(!ctx){showToast('⚠ Descreva o ambiente e o look!');return;}
 
-  const modelId=document.getElementById('sceneModelSel').value;
-  const model=savedModels.find(m=>m.id==modelId);
-  const modelName=model?model.name:'a female influencer';
+  const modelName='a female influencer';
 
   const btn=document.querySelector('[onclick="generateScene()"]');
   const orig=btn.textContent;
@@ -1369,10 +1359,7 @@ async function generateScene(){
         model:'claude-sonnet-4-20250514',
         max_tokens:300,
         system:'You are an expert at writing scene descriptions for AI image generation of virtual influencers. Write a single concise paragraph in English describing the environment, outfit, lighting and mood. Be specific and visual. No bullet points, no titles, no instructions — just a flowing scene description.',
-        messages:[{role:'user',content:`Write a scene description in English for a selfie photo of a virtual influencer.
-
-Context (pt-BR): ${ctx}
-${model?`Influencer name: ${modelName}`:''}`}]
+        messages:[{role:'user',content:`Write a scene description in English for a selfie photo of a virtual influencer.\n\nContext (pt-BR): ${ctx}`}]
       })
     });
     const data=await res.json();
@@ -1604,11 +1591,7 @@ function renderModels(){
 }
 
 function updateSelects(){
-  const s=document.getElementById('sceneModelSel');
-  if(!s) return;
-  const prev=s.value;
-  s.innerHTML=`<option value="">— Nenhuma —</option>`+savedModels.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
-  if(prev) s.value=prev;
+  // Kept for future use
 }
 
 // ===== STYLES =====
