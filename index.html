@@ -678,6 +678,33 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
       </div>
     </div>
 
+    <!-- PROMPT DE IDENTIDADE -->
+    <div class="scene-card" style="border-color:rgba(255,228,94,0.25);">
+      <div class="scene-header" style="border-bottom:1px solid rgba(255,228,94,0.15);">
+        <div class="form-section-icon" style="background:rgba(255,228,94,0.1);border-color:rgba(255,228,94,0.3);">✨</div>
+        <div style="flex:1;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;">Prompt de Identidade</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Prompt narrativo completo — pronto para o Flow</div>
+        </div>
+        <span class="badge" style="background:rgba(255,228,94,0.1);color:var(--yellow);border:1px solid rgba(255,228,94,0.25);">Sem API Key</span>
+      </div>
+      <div class="scene-body">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap;">
+          <div class="field-label" style="margin-bottom:0;">Selecionar Modelo:</div>
+          <select class="scene-model-sel" id="identityModelSel" onchange="updateIdentityPrompt()" style="flex:1;max-width:260px;">
+            <option value="">— Selecione uma modelo —</option>
+          </select>
+          <button class="gen-btn" onclick="updateIdentityPrompt()" style="padding:8px 18px;">↻ Gerar</button>
+        </div>
+        <div class="scene-result" style="border-color:rgba(255,228,94,0.15);min-height:120px;">
+          <div class="scene-result-text" id="identityResult" style="color:var(--text-sec);">Selecione uma modelo salva para gerar o prompt de identidade...</div>
+        </div>
+        <div class="scene-actions" style="margin-top:10px;">
+          <button class="copy-btn" onclick="copyIdentity()" id="copyIdentityBtn" style="border-color:rgba(255,228,94,0.2);color:var(--yellow);">⧉ Copiar Prompt de Identidade</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ROSTO + CORPO -->
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;">
       <div class="field-label">Modelo para prompts personalizados:</div>
@@ -1198,7 +1225,88 @@ function setPType(card,type){
   updatePrompts();
 }
 
-function updatePrompts(){
+function updateIdentityPrompt(){
+  const id=document.getElementById('identityModelSel').value;
+  const model=savedModels.find(m=>m.id==id);
+  const el=document.getElementById('identityResult');
+  if(!model){el.textContent='Selecione uma modelo salva para gerar o prompt de identidade...';return;}
+  el.textContent=buildIdentityPrompt(model);
+}
+
+function buildIdentityPrompt(m){
+  const d=m.data;
+
+  // Tradução dos campos pt → en
+  const ageMap={'18-20 anos':'18-20 year old','21-25 anos':'22-25 year old','26-30 anos':'27-30 year old','31-35 anos':'32-35 year old','36-40 anos':'37-40 year old'};
+  const ethnMap={'Brasileira':'Brazilian','Latina':'Latin','Europeia':'Caucasian European','Asiática':'Asian','Afro-brasileira':'Afro-Brazilian','Mista':'mixed ethnicity','Árabe':'Middle Eastern'};
+  const faceMap={'Oval':'oval','Redondo':'round','Quadrado':'square','Coração':'heart-shaped','Losango':'diamond','Retangular':'rectangular'};
+  const skinToneMap={'Muito clara':'very fair porcelain','Clara':'fair','Média clara':'light medium','Média':'medium olive','Média escura':'medium dark','Escura':'dark','Muito escura':'very dark deep'};
+  const skinTypeMap={'Lisa':'smooth even skin','Com sardas':'natural skin with light freckles','Acne leve':'natural skin with slight texture','Textura natural':'natural skin texture','Poros visíveis':'natural visible pores','Bronzeada':'sun-kissed bronzed skin'};
+  const eyeShapeMap={'Amendoado':'almond-shaped','Redondo':'round','Puxado':'slightly upturned','Profundo':'deep-set','Saliente':'prominent','Caído':'downturned'};
+  const eyeColorMap={'Castanho escuro':'deep brown','Castanho claro':'light brown','Verde':'green','Azul':'blue','Cinza':'grey','Avelã':'hazel','Mel':'honey amber'};
+  const eyeSizeMap={'Pequenos':'small','Médios':'medium','Grandes':'large'};
+  const browMap={'Arqueada fina':'softly arched thin','Arqueada grossa':'strongly arched full','Reta fina':'straight thin','Reta grossa':'straight full','Natural':'natural','Preenchida':'well-defined filled'};
+  const noseMap={'Pequeno':'small delicate','Arrebitado':'small upturned','Reto':'straight refined','Largo':'broad','Fino':'thin narrow','Médio':'medium','Adunco':'aquiline'};
+  const lipsMap={'Finos':'thin','Médios':'medium','Volumosos':'full voluminous','Carnudos':'plump','Assimétricos naturais':'naturally asymmetric','Coração':'heart-shaped'};
+  const teethMap={'Perfeitos':'perfectly straight white','Naturais':'natural straight','Leve espaçamento':'natural with slight gap','Levemente irregulares':'naturally slightly irregular','Sorriso largo':'wide bright smile'};
+  const hairColorMap={'Preto':'jet black','Castanho escuro':'dark brunette','Castanho':'brunette','Castanho claro':'light brown','Loiro escuro':'dark blonde','Loiro':'blonde','Ruivo':'vibrant copper red','Colorido':'colorful dyed'};
+  const hairLenMap={'Curto':'short','Na orelha':'ear-length','No queixo':'chin-length bob','No ombro':'shoulder-length','Médio':'medium','Longo':'long','Muito longo':'waist-length'};
+  const hairTexMap={'Liso':'straight silky','Ondulado':'softly wavy','Cacheado':'curly','Crespo':'coily natural','Relaxado':'relaxed smooth'};
+  const heightMap={'1,50m-1,55m':'152 cm tall','1,56m-1,60m':'158 cm tall','1,61m-1,65m':'163 cm tall','1,66m-1,70m':'168 cm tall','1,71m-1,75m':'173 cm tall','1,76m+':'178 cm tall'};
+  const biotipoMap={'Magra':'slim lean','Atlética':'athletic toned','Curvilínea':'curvy hourglass','Média':'average medium','Robusta':'full-figured','Petite':'petite slim'};
+  const propMap={'Pernas longas':'long legs and proportionate torso','Tronco curto':'long legs and short torso','Equilibrado':'balanced proportions','Pernas médias':'medium legs and balanced torso','Tronco longo':'long torso and medium legs'};
+  const waistMap={'Fina marcada':'defined narrow waist','Média':'medium waist','Larga':'wide waist','Flutuante':'soft undefined waist','Sem definição':'natural undefined waist'};
+  const hipsMap={'Estreito':'narrow hips','Médio':'medium hips','Largo':'wide rounded hips','Muito largo':'very wide full hips','Proporcional':'proportional hips'};
+  const legsMap={'Longas':'long toned legs','Torneadas':'shapely legs','Finas':'slender legs','Musculosas':'muscular defined legs','Médias':'medium legs','Curtas':'short legs'};
+  const armsMap={'Finos':'slender arms','Definidos':'lightly defined arms','Suaves':'soft arms','Musculosos':'muscular arms','Médios':'medium arms'};
+  const shouldersMap={'Estreitos':'narrow shoulders','Médios':'medium shoulders','Largos':'broad shoulders','Caídos':'sloping shoulders','Retos':'straight shoulders'};
+  const postureMap={'Ereta':'upright confident posture','Levemente curvada':'slightly relaxed posture','Relaxada':'relaxed natural posture','Confiante':'confident assertive posture','Delicada':'delicate graceful posture'};
+
+  const age=ageMap[d.idade]||d.idade||'young';
+  const eth=ethnMap[d.etnia]||d.etnia||'';
+  const face=faceMap[d.formato_rosto]||d.formato_rosto||'';
+  const skinT=skinToneMap[d.tom_pele]||d.tom_pele||'';
+  const skinTy=skinTypeMap[d.tipo_pele]||d.tipo_pele||'';
+  const eyeS=eyeShapeMap[d.formato_olhos]||d.formato_olhos||'';
+  const eyeC=eyeColorMap[d.cor_olhos]||d.cor_olhos||'';
+  const eyeSz=eyeSizeMap[d.tamanho_olhos]||d.tamanho_olhos||'';
+  const brow=browMap[d.sobrancelha]||d.sobrancelha||'';
+  const nose=noseMap[d.nariz]||d.nariz||'';
+  const lips=lipsMap[d.labios]||d.labios||'';
+  const teeth=teethMap[d.dentes]||d.dentes||'';
+  const hairC=hairColorMap[d.cabelo_cor]||d.cabelo_cor||'';
+  const hairL=hairLenMap[d.cabelo_comp]||d.cabelo_comp||'';
+  const hairT=hairTexMap[d.cabelo_tex]||d.cabelo_tex||'';
+  const height=heightMap[d.altura]||d.altura||'';
+  const bio=biotipoMap[d.biotipo]||d.biotipo||'';
+  const prop=propMap[d.proporcao]||d.proporcao||'';
+  const waist=waistMap[d.cintura]||d.cintura||'';
+  const hips=hipsMap[d.quadril]||d.quadril||'';
+  const legs=legsMap[d.pernas]||d.pernas||'';
+  const arms=armsMap[d.bracos]||d.bracos||'';
+  const shoulders=shouldersMap[d.ombros]||d.ombros||'';
+  const posture=postureMap[d.postura]||d.postura||'';
+
+  return `Ultra-realistic full body portrait of a ${age} ${eth} woman standing in a solid white studio background.
+She has a ${face} face with ${skinT} skin${skinTy?` and ${skinTy}`:''}. Her eyes are ${eyeS} with ${eyeC} color${eyeSz?`, ${eyeSz} in size`:''}, framed by ${brow} eyebrows. Her nose is ${nose} and her lips are ${lips}. Her teeth are ${teeth}.
+Her hair is ${hairC}, ${hairL}, ${hairT}.
+She is ${height} with a ${bio} body. Her proportions are ${prop}. She has a ${waist}, ${hips}, ${legs}, ${arms}, and ${shoulders}. Her natural posture is ${posture}.
+Professional studio lighting, soft shadow under feet, sharp focus, 85mm lens, high detail skin texture, realistic anatomy, natural proportions, 8K resolution, fashion photography style, photorealistic.`;
+}
+
+function copyIdentity(){
+  const txt=document.getElementById('identityResult').textContent;
+  if(!txt||txt.includes('Selecione'))return;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=document.getElementById('copyIdentityBtn');
+    const orig=btn.textContent;
+    btn.textContent='✓ Copiado!';
+    btn.style.color='var(--success)';
+    btn.style.borderColor='var(--success)';
+    setTimeout(()=>{btn.textContent=orig;btn.style.color='var(--yellow)';btn.style.borderColor='rgba(255,228,94,0.2)';},2000);
+  });
+}
+
   const modelId=document.getElementById('promptModelSel')?.value;
   const model=savedModels.find(m=>m.id==modelId);
   const badges={full:'Base Completo',short:'Reduzido',custom:'Personalizado'};
@@ -1307,7 +1415,7 @@ function renderModels(){
 }
 
 function updateSelects(){
-  ['sceneModelSel','promptModelSel'].forEach(id=>{
+  ['sceneModelSel','promptModelSel','identityModelSel'].forEach(id=>{
     const s=document.getElementById(id);
     if(!s)return;
     const prev=s.value;
