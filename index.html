@@ -858,34 +858,204 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 <script>
 // ===== FIELD DEFINITIONS =====
 const ROSTO_FIELDS=[
-  {key:'idade',label:'Idade Aparente',opts:['18-20 anos','21-25 anos','26-30 anos','31-35 anos','36-40 anos']},
-  {key:'etnia',label:'Etnia',opts:['Brasileira','Latina','Europeia','Asiática','Afro-brasileira','Mista','Árabe']},
-  {key:'formato_rosto',label:'Formato do Rosto',opts:['Oval','Redondo','Quadrado','Coração','Losango','Retangular']},
-  {key:'tom_pele',label:'Tom de Pele',opts:['Muito clara','Clara','Média clara','Média','Média escura','Escura','Muito escura']},
-  {key:'tipo_pele',label:'Tipo de Pele',opts:['Lisa','Com sardas','Acne leve','Textura natural','Poros visíveis','Bronzeada']},
-  {key:'formato_olhos',label:'Formato dos Olhos',opts:['Amendoado','Redondo','Puxado','Profundo','Saliente','Caído']},
-  {key:'cor_olhos',label:'Cor dos Olhos',opts:['Castanho escuro','Castanho claro','Verde','Azul','Cinza','Avelã','Mel']},
-  {key:'tamanho_olhos',label:'Tamanho dos Olhos',opts:['Pequenos','Médios','Grandes']},
-  {key:'sobrancelha',label:'Tipo de Sobrancelha',opts:['Arqueada fina','Arqueada grossa','Reta fina','Reta grossa','Natural','Preenchida']},
-  {key:'nariz',label:'Nariz',opts:['Pequeno','Arrebitado','Reto','Largo','Fino','Médio','Adunco']},
-  {key:'labios',label:'Lábios',opts:['Finos','Médios','Volumosos','Carnudos','Assimétricos naturais','Coração']},
-  {key:'dentes',label:'Dentes',opts:['Perfeitos','Naturais','Leve espaçamento','Levemente irregulares','Sorriso largo']},
-  {key:'cabelo_cor',label:'Cabelo — Cor',opts:['Preto','Castanho escuro','Castanho','Castanho claro','Loiro escuro','Loiro','Ruivo','Colorido']},
-  {key:'cabelo_comp',label:'Cabelo — Comprimento',opts:['Curto','Na orelha','No queixo','No ombro','Médio','Longo','Muito longo']},
-  {key:'cabelo_tex',label:'Cabelo — Textura',opts:['Liso','Ondulado','Cacheado','Crespo','Relaxado']},
-  {key:'linha_cabelo',label:'Linha do Cabelo',opts:['Normal','Levemente alta','Alta','Baixa','Em M','Viúva']},
+  {key:'idade',label:'Idade Aparente',opts:[
+    {pt:'18-20 anos',en:'18-20 years old'},
+    {pt:'21-25 anos',en:'21-25 years old'},
+    {pt:'26-30 anos',en:'26-30 years old'},
+    {pt:'31-35 anos',en:'31-35 years old'},
+    {pt:'36-40 anos',en:'36-40 years old'},
+  ]},
+  {key:'etnia',label:'Etnia',opts:[
+    {pt:'Brasileira',en:'Brazilian'},
+    {pt:'Latina',en:'Latina'},
+    {pt:'Europeia',en:'European'},
+    {pt:'Asiática',en:'Asian'},
+    {pt:'Afro-brasileira',en:'Afro-Brazilian'},
+    {pt:'Mista',en:'Mixed'},
+    {pt:'Árabe',en:'Arab'},
+  ]},
+  {key:'formato_rosto',label:'Formato do Rosto',opts:[
+    {pt:'Oval',en:'oval'},
+    {pt:'Redondo',en:'round'},
+    {pt:'Quadrado',en:'square'},
+    {pt:'Coração',en:'heart-shaped'},
+    {pt:'Losango',en:'diamond-shaped'},
+    {pt:'Retangular',en:'rectangular'},
+  ]},
+  {key:'tom_pele',label:'Tom de Pele',opts:[
+    {pt:'Muito clara',en:'very fair'},
+    {pt:'Clara',en:'fair'},
+    {pt:'Média clara',en:'light medium'},
+    {pt:'Média',en:'medium'},
+    {pt:'Média escura',en:'medium dark'},
+    {pt:'Escura',en:'dark'},
+    {pt:'Muito escura',en:'very dark'},
+  ]},
+  {key:'tipo_pele',label:'Tipo de Pele',opts:[
+    {pt:'Lisa',en:'smooth skin'},
+    {pt:'Com sardas',en:'freckled skin'},
+    {pt:'Acne leve',en:'light acne skin'},
+    {pt:'Textura natural',en:'natural texture skin'},
+    {pt:'Poros visíveis',en:'visible pores skin'},
+    {pt:'Bronzeada',en:'tanned skin'},
+  ]},
+  {key:'formato_olhos',label:'Formato dos Olhos',opts:[
+    {pt:'Amendoado',en:'almond-shaped eyes'},
+    {pt:'Redondo',en:'round eyes'},
+    {pt:'Puxado',en:'upturned eyes'},
+    {pt:'Profundo',en:'deep-set eyes'},
+    {pt:'Saliente',en:'prominent eyes'},
+    {pt:'Caído',en:'downturned eyes'},
+  ]},
+  {key:'cor_olhos',label:'Cor dos Olhos',opts:[
+    {pt:'Castanho escuro',en:'dark brown eyes'},
+    {pt:'Castanho claro',en:'light brown eyes'},
+    {pt:'Verde',en:'green eyes'},
+    {pt:'Azul',en:'blue eyes'},
+    {pt:'Cinza',en:'grey eyes'},
+    {pt:'Avelã',en:'hazel eyes'},
+    {pt:'Mel',en:'honey eyes'},
+  ]},
+  {key:'tamanho_olhos',label:'Tamanho dos Olhos',opts:[
+    {pt:'Pequenos',en:'small eyes'},
+    {pt:'Médios',en:'medium eyes'},
+    {pt:'Grandes',en:'large eyes'},
+  ]},
+  {key:'sobrancelha',label:'Tipo de Sobrancelha',opts:[
+    {pt:'Arqueada fina',en:'thin arched eyebrows'},
+    {pt:'Arqueada grossa',en:'thick arched eyebrows'},
+    {pt:'Reta fina',en:'thin straight eyebrows'},
+    {pt:'Reta grossa',en:'thick straight eyebrows'},
+    {pt:'Natural',en:'natural eyebrows'},
+    {pt:'Preenchida',en:'filled eyebrows'},
+  ]},
+  {key:'nariz',label:'Nariz',opts:[
+    {pt:'Pequeno',en:'small nose'},
+    {pt:'Arrebitado',en:'button nose'},
+    {pt:'Reto',en:'straight nose'},
+    {pt:'Largo',en:'wide nose'},
+    {pt:'Fino',en:'narrow nose'},
+    {pt:'Médio',en:'medium nose'},
+    {pt:'Adunco',en:'aquiline nose'},
+  ]},
+  {key:'labios',label:'Lábios',opts:[
+    {pt:'Finos',en:'thin lips'},
+    {pt:'Médios',en:'medium lips'},
+    {pt:'Volumosos',en:'full lips'},
+    {pt:'Carnudos',en:'plump lips'},
+    {pt:'Assimétricos naturais',en:'naturally asymmetrical lips'},
+    {pt:'Coração',en:'cupid bow lips'},
+  ]},
+  {key:'dentes',label:'Dentes',opts:[
+    {pt:'Perfeitos',en:'perfect teeth'},
+    {pt:'Naturais',en:'natural teeth'},
+    {pt:'Leve espaçamento',en:'slight gap teeth'},
+    {pt:'Levemente irregulares',en:'slightly irregular teeth'},
+    {pt:'Sorriso largo',en:'wide smile'},
+  ]},
+  {key:'cabelo_cor',label:'Cabelo — Cor',opts:[
+    {pt:'Preto',en:'black hair'},
+    {pt:'Castanho escuro',en:'dark brown hair'},
+    {pt:'Castanho',en:'brown hair'},
+    {pt:'Castanho claro',en:'light brown hair'},
+    {pt:'Loiro escuro',en:'dark blonde hair'},
+    {pt:'Loiro',en:'blonde hair'},
+    {pt:'Ruivo',en:'red hair'},
+    {pt:'Colorido',en:'colorful dyed hair'},
+  ]},
+  {key:'cabelo_comp',label:'Cabelo — Comprimento',opts:[
+    {pt:'Curto',en:'short hair'},
+    {pt:'Na orelha',en:'ear-length hair'},
+    {pt:'No queixo',en:'chin-length hair'},
+    {pt:'No ombro',en:'shoulder-length hair'},
+    {pt:'Médio',en:'medium-length hair'},
+    {pt:'Longo',en:'long hair'},
+    {pt:'Muito longo',en:'very long hair'},
+  ]},
+  {key:'cabelo_tex',label:'Cabelo — Textura',opts:[
+    {pt:'Liso',en:'straight hair'},
+    {pt:'Ondulado',en:'wavy hair'},
+    {pt:'Cacheado',en:'curly hair'},
+    {pt:'Crespo',en:'coily hair'},
+    {pt:'Relaxado',en:'relaxed hair'},
+  ]},
+  {key:'linha_cabelo',label:'Linha do Cabelo',opts:[
+    {pt:'Normal',en:'normal hairline'},
+    {pt:'Levemente alta',en:'slightly high hairline'},
+    {pt:'Alta',en:'high hairline'},
+    {pt:'Baixa',en:'low hairline'},
+    {pt:'Em M',en:'M-shaped hairline'},
+    {pt:'Viúva',en:'widows peak hairline'},
+  ]},
 ];
 
 const CORPO_FIELDS=[
-  {key:'altura',label:'Altura',opts:['1,50m-1,55m','1,56m-1,60m','1,61m-1,65m','1,66m-1,70m','1,71m-1,75m','1,76m+']},
-  {key:'biotipo',label:'Biotipo',opts:['Magra','Atlética','Curvilínea','Média','Robusta','Petite']},
-  {key:'proporcao',label:'Proporção Corporal',opts:['Pernas longas','Tronco curto','Equilibrado','Pernas médias','Tronco longo']},
-  {key:'cintura',label:'Tipo de Cintura',opts:['Fina marcada','Média','Larga','Flutuante','Sem definição']},
-  {key:'quadril',label:'Quadril',opts:['Estreito','Médio','Largo','Muito largo','Proporcional']},
-  {key:'pernas',label:'Pernas',opts:['Longas','Torneadas','Finas','Musculosas','Médias','Curtas']},
-  {key:'bracos',label:'Braços',opts:['Finos','Definidos','Suaves','Musculosos','Médios']},
-  {key:'ombros',label:'Ombros',opts:['Estreitos','Médios','Largos','Caídos','Retos']},
-  {key:'postura',label:'Postura Natural',opts:['Ereta','Levemente curvada','Relaxada','Confiante','Delicada']},
+  {key:'altura',label:'Altura',opts:[
+    {pt:'1,50m-1,55m',en:'4\'11"-5\'1" tall'},
+    {pt:'1,56m-1,60m',en:'5\'1"-5\'3" tall'},
+    {pt:'1,61m-1,65m',en:'5\'3"-5\'5" tall'},
+    {pt:'1,66m-1,70m',en:'5\'5"-5\'7" tall'},
+    {pt:'1,71m-1,75m',en:'5\'7"-5\'9" tall'},
+    {pt:'1,76m+',en:'5\'9"+ tall'},
+  ]},
+  {key:'biotipo',label:'Biotipo',opts:[
+    {pt:'Magra',en:'slim build'},
+    {pt:'Atlética',en:'athletic build'},
+    {pt:'Curvilínea',en:'curvy build'},
+    {pt:'Média',en:'average build'},
+    {pt:'Robusta',en:'full build'},
+    {pt:'Petite',en:'petite build'},
+  ]},
+  {key:'proporcao',label:'Proporção Corporal',opts:[
+    {pt:'Pernas longas',en:'long legs proportions'},
+    {pt:'Tronco curto',en:'short torso proportions'},
+    {pt:'Equilibrado',en:'balanced proportions'},
+    {pt:'Pernas médias',en:'medium legs proportions'},
+    {pt:'Tronco longo',en:'long torso proportions'},
+  ]},
+  {key:'cintura',label:'Tipo de Cintura',opts:[
+    {pt:'Fina marcada',en:'defined narrow waist'},
+    {pt:'Média',en:'medium waist'},
+    {pt:'Larga',en:'wide waist'},
+    {pt:'Flutuante',en:'undefined waist'},
+    {pt:'Sem definição',en:'straight waist'},
+  ]},
+  {key:'quadril',label:'Quadril',opts:[
+    {pt:'Estreito',en:'narrow hips'},
+    {pt:'Médio',en:'medium hips'},
+    {pt:'Largo',en:'wide hips'},
+    {pt:'Muito largo',en:'very wide hips'},
+    {pt:'Proporcional',en:'proportional hips'},
+  ]},
+  {key:'pernas',label:'Pernas',opts:[
+    {pt:'Longas',en:'long legs'},
+    {pt:'Torneadas',en:'toned legs'},
+    {pt:'Finas',en:'slim legs'},
+    {pt:'Musculosas',en:'muscular legs'},
+    {pt:'Médias',en:'medium legs'},
+    {pt:'Curtas',en:'short legs'},
+  ]},
+  {key:'bracos',label:'Braços',opts:[
+    {pt:'Finos',en:'slim arms'},
+    {pt:'Definidos',en:'defined arms'},
+    {pt:'Suaves',en:'soft arms'},
+    {pt:'Musculosos',en:'muscular arms'},
+    {pt:'Médios',en:'medium arms'},
+  ]},
+  {key:'ombros',label:'Ombros',opts:[
+    {pt:'Estreitos',en:'narrow shoulders'},
+    {pt:'Médios',en:'medium shoulders'},
+    {pt:'Largos',en:'broad shoulders'},
+    {pt:'Caídos',en:'sloped shoulders'},
+    {pt:'Retos',en:'straight shoulders'},
+  ]},
+  {key:'postura',label:'Postura Natural',opts:[
+    {pt:'Ereta',en:'upright posture'},
+    {pt:'Levemente curvada',en:'slightly curved posture'},
+    {pt:'Relaxada',en:'relaxed posture'},
+    {pt:'Confiante',en:'confident posture'},
+    {pt:'Delicada',en:'delicate posture'},
+  ]},
 ];
 
 // ===== PROMPTS =====
@@ -1084,9 +1254,13 @@ function buildFields(fields,gridId){
     const isSuggestive=currentMode==='suggestive'||currentMode==='auto';
     let inputHtml;
     if(isSuggestive){
+      const options=f.opts.map(o=>{
+        const label=typeof o==='object'?`${o.pt} (${o.en})`:o;
+        const value=typeof o==='object'?o.en:o;
+        return `<option value="${value}">${label}</option>`;
+      }).join('');
       inputHtml=`<select class="field-input" id="field_${f.key}" onchange="liveUpdateIdentity()">
-        <option value="">Selecionar...</option>
-        ${f.opts.map(o=>`<option value="${o}">${o}</option>`).join('')}
+        <option value="">Selecionar...</option>${options}
       </select>`;
     } else {
       inputHtml=`<input class="field-input" id="field_${f.key}" placeholder="Digite...">`;
@@ -1178,7 +1352,7 @@ async function generateAuto(){
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
         system:`Você é um assistente que gera fichas de modelos para IA. Responda APENAS com JSON válido, sem markdown, sem explicações. Use exatamente as chaves fornecidas.`,
-        messages:[{role:'user',content:`Crie uma modelo com base na direção: "${dir}"\n\nRetorne um JSON com exatamente estas chaves e escolha opções coerentes com a direção:\n${[...ROSTO_FIELDS,...CORPO_FIELDS].map(f=>`"${f.key}": uma de [${f.opts.map(o=>`"${o}"`).join(',')}]`).join(',\n')}`}]
+        messages:[{role:'user',content:`Create a virtual influencer model based on this direction: "${dir}"\n\nReturn a JSON object with exactly these keys. Choose the most appropriate English value from the options listed for each key:\n${[...ROSTO_FIELDS,...CORPO_FIELDS].map(f=>`"${f.key}": one of [${f.opts.map(o=>typeof o==='object'?`"${o.en}"`:`"${o}"`).join(',')}]`).join(',\n')}`}]
       })
     });
     const data=await res.json();
@@ -1196,11 +1370,11 @@ async function generateAuto(){
     [...ROSTO_FIELDS,...CORPO_FIELDS].forEach(f=>{
       const el=document.getElementById('field_'+f.key);
       if(el&&parsed[f.key]){
-        // Try exact match first, then partial
         const opts=[...el.options];
-        const match=opts.find(o=>o.value===parsed[f.key])||opts.find(o=>o.value.toLowerCase().includes(parsed[f.key].toLowerCase()));
+        const val=parsed[f.key];
+        // Match by value (en) exact, then partial
+        const match=opts.find(o=>o.value===val)||opts.find(o=>o.value.toLowerCase().includes(val.toLowerCase()))||opts.find(o=>val.toLowerCase().includes(o.value.toLowerCase()));
         if(match) el.value=match.value;
-        else { el.value=''; el.options[0].text=parsed[f.key]; el.value=el.options[0].value; }
       }
     });
     showToast('⚡ Modelo gerada com sucesso!');
@@ -1301,23 +1475,26 @@ function copyIdentityInline(){
 function buildIdentityPrompt(m){
   const d=m.data;
   const parts=[];
-  if(d.idade) parts.push(`${d.idade.replace(' anos','-year-old')}`);
-  if(d.etnia) parts.push(`${d.etnia.toLowerCase()} woman`);
-  if(d.formato_rosto) parts.push(`${d.formato_rosto.toLowerCase()} face shape`);
-  if(d.tom_pele) parts.push(`${d.tom_pele.toLowerCase()} skin tone`);
-  if(d.tipo_pele) parts.push(`${d.tipo_pele.toLowerCase()} skin`);
-  if(d.formato_olhos) parts.push(`${d.formato_olhos.toLowerCase()} eyes`);
-  if(d.cor_olhos) parts.push(`${d.cor_olhos.toLowerCase()} eye color`);
-  if(d.sobrancelha) parts.push(`${d.sobrancelha.toLowerCase()} eyebrows`);
-  if(d.nariz) parts.push(`${d.nariz.toLowerCase()} nose`);
-  if(d.labios) parts.push(`${d.labios.toLowerCase()} lips`);
-  if(d.dentes) parts.push(`${d.dentes.toLowerCase()} teeth`);
-  if(d.cabelo_cor||d.cabelo_comp||d.cabelo_tex) parts.push(`${[d.cabelo_comp,d.cabelo_tex,d.cabelo_cor].filter(Boolean).join(' ').toLowerCase()} hair`);
-  if(d.altura) parts.push(`${d.altura} tall`);
-  if(d.biotipo) parts.push(`${d.biotipo.toLowerCase()} body type`);
-  if(d.cintura) parts.push(`${d.cintura.toLowerCase()} waist`);
-  if(d.quadril) parts.push(`${d.quadril.toLowerCase()} hips`);
-  if(d.postura) parts.push(`${d.postura.toLowerCase()} posture`);
+  if(d.idade) parts.push(d.idade);
+  if(d.etnia) parts.push(`${d.etnia} woman`);
+  if(d.formato_rosto) parts.push(`${d.formato_rosto} face shape`);
+  if(d.tom_pele) parts.push(`${d.tom_pele} skin tone`);
+  if(d.tipo_pele) parts.push(d.tipo_pele);
+  if(d.formato_olhos) parts.push(d.formato_olhos);
+  if(d.cor_olhos) parts.push(d.cor_olhos);
+  if(d.tamanho_olhos) parts.push(d.tamanho_olhos);
+  if(d.sobrancelha) parts.push(d.sobrancelha);
+  if(d.nariz) parts.push(d.nariz);
+  if(d.labios) parts.push(d.labios);
+  if(d.dentes) parts.push(d.dentes);
+  if(d.cabelo_comp||d.cabelo_tex||d.cabelo_cor) parts.push([d.cabelo_comp,d.cabelo_tex,d.cabelo_cor].filter(Boolean).join(', '));
+  if(d.linha_cabelo) parts.push(d.linha_cabelo);
+  if(d.altura) parts.push(d.altura);
+  if(d.biotipo) parts.push(d.biotipo);
+  if(d.proporcao) parts.push(d.proporcao);
+  if(d.cintura) parts.push(d.cintura);
+  if(d.quadril) parts.push(d.quadril);
+  if(d.postura) parts.push(d.postura);
 
   return `Ultra-realistic digital portrait of ${m.name}. A ${parts.join(', ')}. Virtual influencer, photorealistic, 8K resolution, natural lighting, authentic appearance. No stylization. This is the complete character reference for consistent identity across all generations.`;
 }
@@ -1360,37 +1537,13 @@ function updatePrompts(){
 
 function buildCustomCorpo(m){
   const d=m.data;
-  const c=[
-    d.altura&&`${d.altura} tall`,
-    d.biotipo&&`${d.biotipo.toLowerCase()} body type`,
-    d.proporcao&&`${d.proporcao.toLowerCase()} proportions`,
-    d.cintura&&`${d.cintura.toLowerCase()} waist`,
-    d.quadril&&`${d.quadril.toLowerCase()} hips`,
-    d.pernas&&`${d.pernas.toLowerCase()} legs`,
-    d.bracos&&`${d.bracos.toLowerCase()} arms`,
-    d.ombros&&`${d.ombros.toLowerCase()} shoulders`,
-    d.postura&&`${d.postura.toLowerCase()} posture`,
-  ].filter(Boolean).join(', ');
+  const c=[d.altura,d.biotipo,d.proporcao,d.cintura,d.quadril,d.pernas,d.bracos,d.ombros,d.postura].filter(Boolean).join(', ');
   return `Ultra-realistic full body character model sheet of the SAME female influencer: ${m.name}.\n\nPhysical profile: ${c}.\n\nCreate a single image with three aligned full-body views side by side: 1) Front view  2) Left profile  3) Back view. All perfectly aligned, same scale, exact proportions. Neutral anatomical pose. No exaggeration, no stylization.\n\nClothing: Neutral beige short-sleeve top, high-waisted black fitted shorts. No transparency. No cleavage. Barefoot.\n\nStudio white background. Flat soft lighting. 8K resolution. Professional model turnaround sheet.`;
 }
 
 function buildCustomRosto(m){
   const d=m.data;
-  const c=[
-    d.idade&&`apparent age ${d.idade}`,
-    d.etnia&&`${d.etnia.toLowerCase()} ethnicity`,
-    d.formato_rosto&&`${d.formato_rosto.toLowerCase()} face shape`,
-    d.tom_pele&&`${d.tom_pele.toLowerCase()} skin tone`,
-    d.tipo_pele&&`${d.tipo_pele.toLowerCase()} skin`,
-    d.formato_olhos&&`${d.formato_olhos.toLowerCase()} eyes`,
-    d.cor_olhos&&`${d.cor_olhos.toLowerCase()} eye color`,
-    d.sobrancelha&&`${d.sobrancelha.toLowerCase()} eyebrows`,
-    d.nariz&&`${d.nariz.toLowerCase()} nose`,
-    d.labios&&`${d.labios.toLowerCase()} lips`,
-    d.cabelo_cor&&`${d.cabelo_cor.toLowerCase()} hair`,
-    d.cabelo_comp&&`${d.cabelo_comp.toLowerCase()} length`,
-    d.cabelo_tex&&`${d.cabelo_tex.toLowerCase()} texture`,
-  ].filter(Boolean).join(', ');
+  const c=[d.idade,d.etnia,d.formato_rosto,d.tom_pele,d.tipo_pele,d.formato_olhos,d.cor_olhos,d.sobrancelha,d.nariz,d.labios,d.cabelo_cor,d.cabelo_comp,d.cabelo_tex].filter(Boolean).join(', ');
   return `Ultra-realistic facial reference contact sheet of ${m.name}: female influencer with ${c}.\n\nLayout: 9-frame contact sheet (3x3 grid). Neutral studio background. Consistent lighting, makeup and hairstyle across all frames.\n\nAngles: Frame 1: Front neutral | Frame 2: 45° left | Frame 3: 45° right | Frame 4: Full left profile | Frame 5: Full right profile | Frame 6: Chin down | Frame 7: Chin up | Frame 8: Over-shoulder | Frame 9: Natural smile.\n\n85mm portrait lens. Studio softbox lighting. 8K resolution. Ultra-realistic skin detail. Soft glam makeup. Preserve exact facial identity.`;
 }
 
