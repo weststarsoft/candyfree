@@ -239,6 +239,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
   border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;user-select:none;
   transition:background 0.2s;
 }
+.form-section.collapsed .form-section-header{border-bottom:none;}
 .form-section-header:hover{background:rgba(255,111,216,0.05);}
 .form-section-icon{
   width:30px;height:30px;border-radius:8px;
@@ -253,6 +254,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 }
 .form-chevron{color:var(--text-muted);font-size:11px;transition:transform 0.2s;}
 .form-section.collapsed .form-chevron{transform:rotate(-90deg);}
+.form-body{display:block;}
 .form-section.collapsed .form-body{display:none;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.04);}
 .form-cell{background:transparent;padding:0.875rem 1.25rem;transition:background 0.2s;}
@@ -1062,11 +1064,15 @@ let currentStyleScene='';
 function init(){
   buildFields(ROSTO_FIELDS,'grid-rosto');
   buildFields(CORPO_FIELDS,'grid-corpo');
-  updatePrompts();
   updateSelects();
   renderModels();
   renderStyles();
   if(apiKey) document.getElementById('apiKeyInput').value=apiKey;
+  // Garante seções abertas
+  document.getElementById('sec-rosto').classList.remove('collapsed');
+  document.getElementById('sec-corpo').classList.remove('collapsed');
+  // Atualiza prompts só se elementos existem
+  try{ updatePrompts(); }catch(e){}
 }
 
 // ===== FIELDS =====
@@ -1102,7 +1108,7 @@ function setTab(t){
     document.getElementById('tab-'+x).style.display=x===t?'block':'none';
   });
   document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',['create','prompts','styles','models'][i]===t));
-  if(t==='prompts'){updateSelects();updatePrompts();}
+  if(t==='prompts'){updateSelects();updatePrompts();updateIdentityPrompt();}
   if(t==='models')renderModels();
   if(t==='styles')renderStyles();
 }
@@ -1307,6 +1313,7 @@ function copyIdentity(){
   });
 }
 
+function updatePrompts(){
   const modelId=document.getElementById('promptModelSel')?.value;
   const model=savedModels.find(m=>m.id==modelId);
   const badges={full:'Base Completo',short:'Reduzido',custom:'Personalizado'};
