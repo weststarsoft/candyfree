@@ -594,7 +594,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 
     <div class="model-name-bar">
       <label>✦ Nome da Modelo</label>
-      <input class="model-name-input" id="modelName" placeholder="Ex: Valentina, Sofia, Isabela...">
+      <input class="model-name-input" id="modelName" placeholder="Ex: Valentina, Sofia, Isabela..." oninput="liveUpdateIdentity()">
     </div>
 
     <div class="mode-bar">
@@ -638,6 +638,26 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
       </div>
       <div class="form-body">
         <div class="form-grid" id="grid-corpo"></div>
+      </div>
+    </div>
+
+    <!-- PROMPT DE IDENTIDADE — inline na aba Criar Modelo -->
+    <div class="scene-card" id="identity-inline-card" style="border-color:rgba(255,228,94,0.22);">
+      <div class="scene-header" style="border-bottom:1px solid rgba(255,228,94,0.12);">
+        <div class="form-section-icon" style="background:rgba(255,228,94,0.1);border-color:rgba(255,228,94,0.3);">✨</div>
+        <div style="flex:1;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--text);">Prompt de Identidade</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Gerado automaticamente a partir dos campos acima</div>
+        </div>
+        <span class="badge" style="background:rgba(255,228,94,0.1);color:var(--yellow);border:1px solid rgba(255,228,94,0.22);">Sem API Key</span>
+      </div>
+      <div class="scene-body">
+        <div class="scene-result" style="border-color:rgba(255,228,94,0.12);min-height:100px;">
+          <div class="scene-result-text" id="identityInlineResult" style="color:var(--text-muted);font-style:italic;">Preencha os campos acima para gerar o prompt de identidade...</div>
+        </div>
+        <div class="scene-actions" style="margin-top:10px;">
+          <button class="copy-btn" onclick="copyIdentityInline()" id="copyIdentityInlineBtn" style="border-color:rgba(255,228,94,0.2);color:var(--yellow);">⧉ Copiar Prompt de Identidade</button>
+        </div>
       </div>
     </div>
 
@@ -689,40 +709,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
       </div>
     </div>
 
-    <!-- PROMPT DE IDENTIDADE -->
-    <div class="scene-card" style="border-color:rgba(255,228,94,0.22);">
-      <div class="scene-header" style="border-bottom:1px solid rgba(255,228,94,0.12);">
-        <div class="form-section-icon" style="background:rgba(255,228,94,0.1);border-color:rgba(255,228,94,0.3);">✨</div>
-        <div style="flex:1;">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--text);">Prompt de Identidade</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Prompt narrativo completo — pronto para o Flow</div>
-        </div>
-        <span class="badge" style="background:rgba(255,228,94,0.1);color:var(--yellow);border:1px solid rgba(255,228,94,0.22);">Sem API Key</span>
-      </div>
-      <div class="scene-body">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap;">
-          <div class="field-label" style="margin-bottom:0;">Selecionar Modelo:</div>
-          <select class="scene-model-sel" id="identityModelSel" onchange="updateIdentityPrompt()" style="flex:1;max-width:260px;">
-            <option value="">— Selecione uma modelo —</option>
-          </select>
-          <button class="gen-btn" onclick="updateIdentityPrompt()" style="padding:8px 18px;">↻ Gerar</button>
-        </div>
-        <div class="scene-result" style="border-color:rgba(255,228,94,0.12);min-height:120px;">
-          <div class="scene-result-text" id="identityResult" style="color:var(--text-sec);">Selecione uma modelo salva para gerar o prompt de identidade...</div>
-        </div>
-        <div class="scene-actions" style="margin-top:10px;">
-          <button class="copy-btn" onclick="copyIdentity()" id="copyIdentityBtn" style="border-color:rgba(255,228,94,0.2);color:var(--yellow);">⧉ Copiar Prompt de Identidade</button>
-        </div>
-      </div>
-    </div>
-
     <!-- PROMPTS DE ROSTO + CORPO -->
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap;">
-      <div class="field-label" style="margin-bottom:0;">Modelo para prompts personalizados:</div>
-      <select class="scene-model-sel" id="promptModelSel" onchange="updatePrompts()">
-        <option value="">— Nenhuma —</option>
-      </select>
-    </div>
 
     <div class="prompt-cards">
       <!-- CORPO -->
@@ -1093,16 +1080,15 @@ function buildFields(fields,gridId){
   fields.forEach(f=>{
     const c=document.createElement('div');
     c.className='form-cell';
-    const isAuto=currentMode==='auto';
-    const isSuggestive=currentMode==='suggestive';
+    const isSuggestive=currentMode==='suggestive'||currentMode==='auto';
     let inputHtml;
-    if(isSuggestive||isAuto){
-      inputHtml=`<select class="field-input" id="field_${f.key}">
+    if(isSuggestive){
+      inputHtml=`<select class="field-input" id="field_${f.key}" onchange="liveUpdateIdentity()">
         <option value="">Selecionar...</option>
         ${f.opts.map(o=>`<option value="${o}">${o}</option>`).join('')}
       </select>`;
     } else {
-      inputHtml=`<input class="field-input" id="field_${f.key}" placeholder="Digite...">`;
+      inputHtml=`<input class="field-input" id="field_${f.key}" placeholder="Digite..." oninput="liveUpdateIdentity()">`;
     }
     c.innerHTML=`<div class="field-label">${f.label}</div>${inputHtml}`;
     g.appendChild(c);
@@ -1274,7 +1260,36 @@ function copyScene(){
   });
 }
 
-// ===== IDENTITY PROMPT =====
+// ===== LIVE IDENTITY PROMPT =====
+function liveUpdateIdentity(){
+  const name=document.getElementById('modelName').value.trim();
+  const data=getFormData();
+  const hasAnyField=Object.values(data).some(v=>v);
+  const el=document.getElementById('identityInlineResult');
+  if(!el) return;
+  if(!hasAnyField&&!name){
+    el.textContent='Preencha os campos acima para gerar o prompt de identidade...';
+    el.style.fontStyle='italic';
+    el.style.color='var(--text-muted)';
+    currentIdentityPrompt='';
+    return;
+  }
+  const pseudo={name:name||'Modelo',data};
+  currentIdentityPrompt=buildIdentityPrompt(pseudo);
+  el.textContent=currentIdentityPrompt;
+  el.style.fontStyle='normal';
+  el.style.color='var(--text-sec)';
+}
+
+function copyIdentityInline(){
+  if(!currentIdentityPrompt){showToast('⚠ Preencha os campos primeiro!');return;}
+  navigator.clipboard.writeText(currentIdentityPrompt).then(()=>{
+    const btn=document.getElementById('copyIdentityInlineBtn');
+    btn.textContent='✓ Copiado!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='⧉ Copiar Prompt de Identidade';btn.classList.remove('copied');},2000);
+  });
+}
+
 function buildIdentityPrompt(m){
   const d=m.data;
   const parts=[];
@@ -1299,24 +1314,6 @@ function buildIdentityPrompt(m){
   return `Ultra-realistic digital portrait of ${m.name}. A ${parts.join(', ')}. Virtual influencer, photorealistic, 8K resolution, natural lighting, authentic appearance. No stylization. This is the complete character reference for consistent identity across all generations.`;
 }
 
-function updateIdentityPrompt(){
-  const id=document.getElementById('identityModelSel').value;
-  if(!id){document.getElementById('identityResult').textContent='Selecione uma modelo salva para gerar o prompt de identidade...';return;}
-  const m=savedModels.find(x=>x.id==id);
-  if(!m) return;
-  currentIdentityPrompt=buildIdentityPrompt(m);
-  document.getElementById('identityResult').textContent=currentIdentityPrompt;
-}
-
-function copyIdentity(){
-  if(!currentIdentityPrompt){showToast('⚠ Gere o prompt primeiro!');return;}
-  navigator.clipboard.writeText(currentIdentityPrompt).then(()=>{
-    const btn=document.getElementById('copyIdentityBtn');
-    btn.textContent='✓ Copiado!';btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='⧉ Copiar Prompt de Identidade';btn.classList.remove('copied');},2000);
-  });
-}
-
 // ===== PROMPT TYPE =====
 function setPType(card,type){
   if(card==='corpo') corpoType=type;
@@ -1330,21 +1327,17 @@ function setPType(card,type){
 }
 
 function updatePrompts(){
-  const id=document.getElementById('promptModelSel')?.value;
-  const m=id?savedModels.find(x=>x.id==id):null;
-
-  // CORPO
-  let corpoText,rostText;
   const badgeMap={full:'Base Completo',short:'Reduzido',custom:'Personalizado'};
   const badgeClass={full:'badge-full',short:'badge-short',custom:'badge-custom'};
 
+  let corpoText,rostText;
   if(corpoType==='full') corpoText=PROMPT_CORPO_FULL;
   else if(corpoType==='short') corpoText=PROMPT_CORPO_SHORT;
-  else corpoText=m?buildCustomCorpo(m):'⚠ Selecione uma modelo para o prompt personalizado.';
+  else corpoText='⚠ Modo personalizado desativado.';
 
   if(rostoType==='full') rostText=PROMPT_ROSTO_FULL;
   else if(rostoType==='short') rostText=PROMPT_ROSTO_SHORT;
-  else rostText=m?buildCustomRosto(m):'⚠ Selecione uma modelo para o prompt personalizado.';
+  else rostText='⚠ Modo personalizado desativado.';
 
   const cEl=document.getElementById('corpo-text');
   const rEl=document.getElementById('rosto-text');
@@ -1431,6 +1424,8 @@ function clearForm(){
     const el=document.getElementById('field_'+f.key);
     if(el) el.value='';
   });
+  currentIdentityPrompt='';
+  liveUpdateIdentity();
   showToast('Formulário limpo.');
 }
 
@@ -1457,6 +1452,7 @@ function loadModel(id){
     if(el&&m.data[f.key]) el.value=m.data[f.key];
   });
   setTab('create');
+  liveUpdateIdentity();
   showToast(`"${m.name}" carregada!`);
 }
 
@@ -1485,14 +1481,11 @@ function renderModels(){
 }
 
 function updateSelects(){
-  ['sceneModelSel','promptModelSel','identityModelSel'].forEach(id=>{
-    const s=document.getElementById(id);
-    if(!s) return;
-    const prev=s.value;
-    const emptyLabel=id==='identityModelSel'?'— Selecione uma modelo —':'— Nenhuma —';
-    s.innerHTML=`<option value="">${emptyLabel}</option>`+savedModels.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
-    if(prev) s.value=prev;
-  });
+  const s=document.getElementById('sceneModelSel');
+  if(!s) return;
+  const prev=s.value;
+  s.innerHTML=`<option value="">— Nenhuma —</option>`+savedModels.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
+  if(prev) s.value=prev;
 }
 
 // ===== STYLES =====
