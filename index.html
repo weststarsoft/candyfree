@@ -17,9 +17,9 @@
   --cyan-soft:rgba(59,236,255,0.1);
   --yellow:#FFE45E;
   --bg:#0A0A0B;
-  --bg-card:#16161A;
-  --bg-card2:#1C1C22;
-  --bg-input:#1E1E24;
+  --bg-card:rgba(18,18,22,0.88);
+  --bg-card2:rgba(22,22,28,0.92);
+  --bg-input:#FFFFFF;
   --border:rgba(255,111,216,0.15);
   --border-subtle:rgba(255,255,255,0.06);
   --text:#F0EDE6;
@@ -29,7 +29,7 @@
   --radius:10px;
   --header-h:64px;
 }
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-height:100vh;overflow-x:hidden;}
 
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar{width:4px;height:4px;}
@@ -115,15 +115,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   position:fixed;inset:0;z-index:0;
   background-image:url('images/background.png');
   background-size:cover;background-position:center;
-  opacity:0.18;pointer-events:none;
+  opacity:1;pointer-events:none;
   margin-top:var(--header-h);
+}
+.bg-overlay{
+  position:fixed;inset:0;z-index:0;
+  margin-top:var(--header-h);
+  pointer-events:none;
+  background:radial-gradient(ellipse at center, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.82) 40%, rgba(255,255,255,0.45) 70%, rgba(255,255,255,0) 100%);
 }
 
 /* ===== MAIN ===== */
 .main{
   margin-top:var(--header-h);padding:2rem 1.5rem;
   max-width:980px;margin-left:auto;margin-right:auto;
-  position:relative;z-index:1;
+  position:relative;z-index:2;
 }
 
 /* ===== SECTION HEADER ===== */
@@ -435,6 +441,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <!-- BACKGROUND -->
 <div class="bg-layer"></div>
+<div class="bg-overlay"></div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
@@ -481,7 +488,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="hamburger" onclick="toggleSidebar()">
       <span></span><span></span><span></span>
     </button>
-    <img src="images/logo.png" class="logo-img" id="logo-img" onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='block';" alt="ModelStudio" style="height:40px;object-fit:contain;">
+    <img src="images/logo.png" class="logo-img" id="logo-img" onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='block';" alt="ModelStudio" style="height:40px;object-fit:contain;display:block;">
     <div class="logo-fallback" id="logo-fallback" style="display:none;font-family:'Lilita One',cursive;font-size:22px;background:linear-gradient(135deg,var(--pink),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">ModelStudio</div>
   </div>
   <nav class="header-nav">
