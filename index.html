@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candy Free</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8C97A;
+  --gold-dim: #8B6F35;
+  --gold-glow: rgba(201,168,76,0.15);
+  --bg-primary: #09090B;
+  --bg-secondary: #0F0F12;
+  --bg-card: #141418;
+  --bg-input: #1A1A1F;
+  --border: rgba(201,168,76,0.18);
+  --border-subtle: rgba(255,255,255,0.055);
+  --text-primary: #F2EEE6;
+  --text-secondary: #7A7670;
+  --text-muted: #3A3835;
+  --success: #4CAF7D;
+  --purple: #9B8DE0;
+  --radius: 12px;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ====== SIDEBAR ====== */
+.sidebar {
+  position: fixed; left:0; top:0; bottom:0; width:270px;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  transform: translateX(-270px);
+  transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
+  z-index: 1000;
+  display: flex; flex-direction: column;
+  padding: 1.75rem 1.25rem;
+}
+.sidebar.open { transform: translateX(0); }
+.sidebar-overlay {
+  position: fixed; inset:0;
+  background: rgba(0,0,0,0.7);
+  z-index: 999; display:none;
+  backdrop-filter: blur(4px);
+}
+.sidebar-overlay.open { display:block; }
+.sidebar-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 900;
+  color: var(--gold-light);
+  letter-spacing: 1px;
+  margin-bottom: 0.25rem;
+}
+.sidebar-sub {
+  font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-label {
+  font-size: 10px; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--gold-dim);
+  margin-bottom: 0.75rem; font-weight: 500;
+}
+.tool-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:1.5rem; }
+.tool-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 12px 8px;
+  display: flex; flex-direction:column;
+  align-items:center; gap:7px;
+  cursor:pointer; transition: all 0.2s;
+  text-decoration:none;
+  color: var(--text-secondary);
+  font-size: 10px; font-weight:500; letter-spacing:0.5px;
+  text-align: center;
+}
+.tool-btn:hover { border-color:var(--border); color:var(--text-primary); background:#1C1C22; transform:translateY(-1px); }
+.tool-icon {
+  width:34px; height:34px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:15px; font-weight:800;
+}
+.sidebar-nav { display:flex; flex-direction:column; gap:4px; margin-top:auto; }
+.sidebar-nav-btn {
+  padding: 10px 14px; border-radius:10px;
+  border: 1px solid transparent;
+  background: none; color: var(--text-secondary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; cursor:pointer; text-align:left;
+  transition: all 0.2s;
+}
+.sidebar-nav-btn:hover { background: var(--bg-card); color: var(--text-primary); }
+.sidebar-nav-btn.active { border-color: var(--border); color: var(--gold-light); background: var(--gold-glow); }
+
+/* ====== TOPBAR ====== */
+.topbar {
+  position: sticky; top:0;
+  background: rgba(9,9,11,0.96);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 1.75rem; height:64px;
+  display:flex; align-items:center; justify-content:space-between;
+  z-index: 100;
+}
+.topbar-left { display:flex; align-items:center; gap:16px; }
+.hamburger {
+  width:38px; height:38px;
+  background:none; border:1px solid var(--border);
+  border-radius:10px; cursor:pointer;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:5px;
+  transition: all 0.2s;
+}
+.hamburger:hover { border-color:var(--gold-dim); }
+.hamburger span {
+  display:block; width:16px; height:1.5px;
+  background:var(--gold); border-radius:2px;
+}
+.logo-wrap { display:flex; align-items:baseline; gap:6px; }
+.logo-main {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 900;
+  color: var(--gold-light);
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+.logo-dot { color: var(--gold); font-size: 28px; }
+.logo-free {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; color: var(--text-muted);
+  letter-spacing: 3px;
+}
+
+.nav-tabs {
+  display:flex; gap:3px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px; padding:4px;
+}
+.nav-tab {
+  padding: 7px 18px; border-radius:9px;
+  border:none; background:none;
+  color: var(--text-muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight:500;
+  cursor:pointer; transition: all 0.2s; white-space:nowrap;
+}
+.nav-tab.active { background: linear-gradient(135deg,var(--gold-dim),var(--gold)); color:#09090B; font-weight:600; }
+.nav-tab:hover:not(.active) { color:var(--text-primary); }
+
+/* ====== MAIN ====== */
+.main { padding: 2rem 1.75rem; max-width:980px; margin:0 auto; }
+
+/* ====== SECTION HEADER ====== */
+.section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px; font-weight:900;
+  color: var(--text-primary); letter-spacing:0.3px;
+}
+.section-title span { color: var(--gold); }
+.gold-line { height:1px; background:linear-gradient(90deg,var(--gold-dim),transparent); margin-bottom:1.5rem; }
+
+/* ====== SETTINGS BANNER ====== */
+.settings-banner {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display:flex; align-items:center; gap:12px;
+}
+.settings-banner label { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--gold-dim); white-space:nowrap; font-weight:500; }
+.api-input {
+  flex:1; background:var(--bg-input); border:1px solid var(--border-subtle);
+  border-radius:8px; padding:8px 14px;
+  color:var(--text-primary); font-family:'DM Sans',sans-serif; font-size:13px;
+  outline:none; transition:border-color 0.2s; letter-spacing:1px;
+}
+.api-input:focus { border-color:var(--gold-dim); }
+.api-save-btn {
+  padding:8px 20px; border-radius:8px; border:none;
+  background:linear-gradient(135deg,var(--gold-dim),var(--gold));
+  color:#09090B; font-family:'DM Sans',sans-serif;
+  font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s;
+}
+.api-save-btn:hover { opacity:0.85; }
+.api-status { font-size:11px; color:var(--success); white-space:nowrap; }
+
+/* ====== MODE BAR ====== */
+.mode-bar {
+  background:var(--bg-card); border:1px solid var(--border-subtle);
+  border-radius: var(--radius); padding:0.875rem 1.25rem;
+  margin-bottom:1.25rem;
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+}
+.mode-label { font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:var(--text-muted); font-weight:500; }
+.mode-btns { display:flex; gap:7px; flex:1; }
+.mode-btn {
+  padding:7px 16px; border-radius:8px;
+  border:1px solid var(--border-subtle); background:none;
+  color:var(--text-secondary); font-family:'DM Sans',sans-serif;
+  font-size:13px; cursor:pointer; transition:all 0.2s;
+}
+.mode-btn.active { border-color:var(--gold-dim); color:var(--gold-light); background:var(--gold-glow); }
+.mode-btn:hover:not(.active) { color:var(--text-primary); border-color:var(--border); }
+
+/* ====== DIRECTION BAR ====== */
+.direction-bar {
+  display:flex; gap:10px; align-items:center;
+  background:var(--bg-card); border:1px solid var(--border-subtle);
+  border-radius:var(--radius); padding:0.75rem 1rem;
+  margin-bottom:1.25rem; transition:border-color 0.2s;
+}
+.direction-bar:focus-within { border-color:var(--gold-dim); }
+.direction-bar label { font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold-dim); white-space:nowrap; font-weight:500; }
+.direction-input {
+  flex:1; background:none; border:none; outline:none;
+  color:var(--text-primary); font-family:'DM Sans',sans-serif;
+  font-size:14px; font-style:italic;
+}
+.direction-input::placeholder { color:var(--text-muted); font-style:italic; }
+.gen-btn {
+  padding:8px 20px; border-radius:8px; border:none;
+  background:linear-gradient(135deg,var(--gold-dim),var(--gold));
+  color:#09090B; font-family:'DM Sans',sans-serif;
+  font-size:13px; font-weight:600; cursor:pointer;
+  transition:all 0.2s; white-space:nowrap;
+}
+.gen-btn:hover { opacity:0.85; transform:translateY(-1px); }
+.gen-btn:disabled { opacity:0.35; cursor:not-allowed; transform:none; }
+
+/* ====== LOADING ====== */
+.loading-bar {
+  display:none; align-items:center; gap:10px;
+  padding:0.75rem 1.25rem;
+  background:rgba(201,168,76,0.04);
+  border:1px solid rgba(201,168,76,0.12);
+  border-radius:10px; margin-bottom:1.25rem;
+}
+.loading-bar.show { display:flex; }
+.loading-dots span {
+  display:inline-block; width:6px; height:6px;
+  border-radius:50%; background:var(--gold);
+  margin:0 2px; animation:bounce 1.2s infinite;
+}
+.loading-dots span:nth-child(2) { animation-delay:0.2s; }
+.loading-dots span:nth-child(3) { animation-delay:0.4s; }
+@keyframes bounce { 0%,60%,100%{transform:translateY(0);opacity:0.35} 30%{transform:translateY(-7px);opacity:1} }
+.loading-text { font-size:13px; color:var(--gold-dim); font-style:italic; }
+
+/* ====== MODEL NAME ====== */
+.model-name-bar {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius); padding:1rem 1.25rem;
+  margin-bottom:1.25rem; display:flex; align-items:center; gap:12px;
+}
+.model-name-bar label { font-family:'Playfair Display',serif; font-size:15px; color:var(--gold); white-space:nowrap; font-weight:700; }
+.model-name-input {
+  flex:1; background:var(--bg-input); border:1px solid var(--border-subtle);
+  border-radius:8px; padding:8px 14px;
+  color:var(--text-primary); font-family:'Playfair Display',serif;
+  font-size:20px; font-weight:700; outline:none; transition:border-color 0.2s;
+}
+.model-name-input:focus { border-color:var(--gold-dim); }
+.model-name-input::placeholder { color:var(--text-muted); font-style:italic; font-weight:400; }
+
+/* ====== FORM SECTIONS ====== */
+.form-section { background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; margin-bottom:1.25rem; overflow:hidden; }
+.form-section-header {
+  padding:1rem 1.25rem; display:flex; align-items:center; gap:10px;
+  border-bottom:1px solid var(--border-subtle); cursor:pointer; user-select:none;
+  transition: background 0.2s;
+}
+.form-section-header:hover { background:#18181D; }
+.form-section-icon { width:30px;height:30px;border-radius:8px;background:rgba(201,168,76,0.09);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px; }
+.form-section-title { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text-primary); flex:1; }
+.form-section-count { font-size:11px;color:var(--text-muted);background:var(--bg-input);padding:3px 9px;border-radius:20px;border:1px solid var(--border-subtle); }
+.form-section-chevron { color:var(--text-muted);font-size:12px;transition:transform 0.2s; }
+.form-section.collapsed .form-section-chevron { transform:rotate(-90deg); }
+.form-section.collapsed .form-section-body { display:none; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border-subtle); }
+.form-cell { background:var(--bg-card); padding:0.875rem 1.25rem; transition:background 0.15s; }
+.form-cell:hover { background:#18181D; }
+.field-label { font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-dim);margin-bottom:6px;font-weight:500; }
+.field-input {
+  width:100%; background:var(--bg-input); border:1px solid var(--border-subtle);
+  border-radius:7px; padding:7px 10px;
+  color:var(--text-primary); font-family:'DM Sans',sans-serif;
+  font-size:13px; outline:none; transition:border-color 0.2s; appearance:none;
+}
+.field-input:focus { border-color:var(--gold-dim); }
+.field-input option { background:var(--bg-card); }
+
+/* ====== ACTION BAR ====== */
+.action-bar { display:flex;gap:10px;justify-content:flex-end;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border-subtle); }
+.btn-secondary { padding:10px 22px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--text-secondary);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s; }
+.btn-secondary:hover { color:var(--text-primary);border-color:var(--gold-dim); }
+.btn-primary { padding:10px 28px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--gold-dim),var(--gold));color:#09090B;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s; }
+.btn-primary:hover { opacity:0.85;transform:translateY(-1px); }
+
+/* ====== PROMPTS ====== */
+.prompt-card { background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;overflow:hidden;margin-bottom:1rem; }
+.prompt-card-header { padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border-subtle); }
+.prompt-card-title { font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text-primary); }
+.prompt-card-badge { font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:20px;font-weight:500; }
+.badge-fixed { background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.2); }
+.badge-reduced { background:rgba(76,175,125,0.1);color:#4CAF7D;border:1px solid rgba(76,175,125,0.2); }
+.badge-custom { background:rgba(155,141,224,0.1);color:var(--purple);border:1px solid rgba(155,141,224,0.2); }
+.prompt-type-btns { display:flex;gap:6px;padding:0.875rem 1.25rem;border-bottom:1px solid var(--border-subtle); }
+.ptype-btn { flex:1;padding:7px;border-radius:8px;border:1px solid var(--border-subtle);background:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s;font-weight:500; }
+.ptype-btn.active { border-color:var(--gold-dim);color:var(--gold-light);background:var(--gold-glow); }
+.ptype-btn:hover:not(.active) { color:var(--text-secondary); }
+.prompt-body { padding:1rem 1.25rem; }
+.prompt-text { font-family:'DM Sans',sans-serif;font-size:12.5px;color:var(--text-secondary);line-height:1.75;white-space:pre-wrap;max-height:200px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent; }
+.copy-btns { display:flex;gap:8px;padding:0.75rem 1.25rem;border-top:1px solid var(--border-subtle);background:var(--bg-secondary); }
+.copy-btn { flex:1;padding:8px;border-radius:8px;border:1px solid var(--border-subtle);background:var(--bg-card);color:var(--text-secondary);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;font-weight:500; }
+.copy-btn:hover { border-color:var(--gold-dim);color:var(--gold-light); }
+.copy-btn.copied { border-color:var(--success);color:var(--success); }
+
+/* ====== SCENE / CONTENT ====== */
+.scene-card { background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1rem; }
+.scene-header { padding:1rem 1.25rem;border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;gap:10px; }
+.scene-title { font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text-primary);flex:1; }
+.scene-body { padding:1.25rem; }
+.scene-input-wrap { display:flex;gap:10px;align-items:flex-start;margin-bottom:1rem; }
+.scene-textarea {
+  flex:1; background:var(--bg-input); border:1px solid var(--border-subtle);
+  border-radius:10px; padding:12px 14px;
+  color:var(--text-primary); font-family:'DM Sans',sans-serif;
+  font-size:14px; outline:none; resize:vertical; min-height:80px;
+  transition:border-color 0.2s; font-style:italic;
+}
+.scene-textarea:focus { border-color:var(--gold-dim); }
+.scene-textarea::placeholder { color:var(--text-muted); }
+.scene-gen-btn { padding:10px 18px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--gold-dim),var(--gold));color:#09090B;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap; }
+.scene-gen-btn:hover { opacity:0.85; }
+.scene-gen-btn:disabled { opacity:0.35;cursor:not-allowed; }
+.scene-prompt-out { background:var(--bg-secondary);border:1px solid var(--border-subtle);border-radius:10px;padding:1rem;margin-bottom:1rem; }
+.scene-prompt-out .prompt-text { max-height:280px; }
+
+/* ====== MODELS LIST ====== */
+.models-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:1rem; }
+.model-card { background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:1.25rem;cursor:pointer;transition:all 0.2s; }
+.model-card:hover { border-color:var(--border);transform:translateY(-2px); }
+.model-avatar { width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:22px;color:#09090B;margin-bottom:12px;font-weight:900; }
+.model-card-name { font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:4px; }
+.model-card-desc { font-size:12px;color:var(--text-muted);line-height:1.5; }
+.model-card-date { margin-top:10px;font-size:11px;color:var(--text-muted); }
+.model-card-actions { display:flex;gap:6px;margin-top:12px; }
+.model-action-btn { flex:1;padding:6px;border-radius:7px;border:1px solid var(--border-subtle);background:none;color:var(--text-muted);font-size:11px;cursor:pointer;transition:all 0.2s; }
+.model-action-btn:hover { border-color:var(--border);color:var(--text-primary); }
+.model-action-btn.del:hover { border-color:rgba(220,50,50,0.4);color:#E05555; }
+
+/* ====== STYLES / REFERÊNCIAS ====== */
+.styles-toolbar { display:flex;gap:10px;margin-bottom:1.25rem;align-items:center;flex-wrap:wrap; }
+.styles-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem; }
+.style-card { background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;overflow:hidden;cursor:pointer;transition:all 0.2s;position:relative; }
+.style-card:hover { border-color:var(--border);transform:translateY(-2px); }
+.style-card.selected { border-color:var(--gold);box-shadow:0 0 0 1px var(--gold-dim); }
+.style-card-img { width:100%;height:180px;object-fit:cover;display:block;background:var(--bg-input); }
+.style-card-img-placeholder { width:100%;height:180px;display:flex;align-items:center;justify-content:center;background:var(--bg-input);color:var(--text-muted);font-size:32px; }
+.style-card-body { padding:0.875rem 1rem; }
+.style-card-name { font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--text-primary);margin-bottom:4px; }
+.style-card-tag { font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-dim);font-weight:500; }
+.style-card-actions { display:flex;gap:6px;margin-top:10px; }
+.style-selected-badge { position:absolute;top:10px;right:10px;background:var(--gold);color:#09090B;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;letter-spacing:1px; }
+
+/* MODAL */
+.modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(6px); }
+.modal { background:var(--bg-secondary);border:1px solid var(--border);border-radius:18px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;padding:2rem; }
+.modal-title { font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--text-primary);margin-bottom:1.5rem; }
+.modal-field { margin-bottom:1rem; }
+.modal-label { font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dim);margin-bottom:6px;display:block;font-weight:500; }
+.modal-input { width:100%;background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:9px;padding:10px 14px;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s; }
+.modal-input:focus { border-color:var(--gold-dim); }
+.modal-textarea { width:100%;background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:9px;padding:10px 14px;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;resize:vertical;min-height:120px;transition:border-color 0.2s;line-height:1.6; }
+.modal-textarea:focus { border-color:var(--gold-dim); }
+.modal-img-preview { width:100%;height:200px;object-fit:cover;border-radius:10px;border:1px solid var(--border-subtle);margin-bottom:0.75rem;display:none; }
+.modal-img-placeholder { width:100%;height:140px;border-radius:10px;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:var(--text-muted);font-size:13px;margin-bottom:0.75rem;transition:border-color 0.2s; }
+.modal-img-placeholder:hover { border-color:var(--gold-dim);color:var(--text-secondary); }
+.modal-actions { display:flex;gap:10px;justify-content:flex-end;margin-top:1.5rem; }
+
+/* EMPTY STATE */
+.empty-state { text-align:center;padding:4rem 2rem;color:var(--text-muted); }
+.empty-icon { font-size:38px;margin-bottom:1rem;opacity:0.25; }
+.empty-text { font-size:14px;line-height:1.7; }
+
+/* PROMPT MODEL SELECT */
+.prompt-model-bar { display:flex;align-items:center;gap:10px;margin-bottom:1.25rem; }
+.prompt-model-bar span { font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;white-space:nowrap; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width:4px;height:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border);border-radius:2px; }
+
+/* TOAST */
+.toast { position:fixed;bottom:24px;right:24px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:12px 20px;color:var(--text-primary);font-size:13px;z-index:9999;transform:translateY(20px);opacity:0;transition:all 0.3s;pointer-events:none; }
+.toast.show { transform:translateY(0);opacity:1; }
+.toast.success { border-color:rgba(76,175,125,0.4);color:var(--success); }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-logo">Candy Free</div>
+  <div class="sidebar-sub">AI Model Studio</div>
+  <div class="sidebar-label">Ferramentas</div>
+  <div class="tool-grid">
+    <a href="https://app.leonardo.ai" target="_blank" class="tool-btn">
+      <div class="tool-icon" style="background:#1a1a2e;color:#c17af0;">L</div>Leonardo AI
+    </a>
+    <a href="https://www.midjourney.com" target="_blank" class="tool-btn">
+      <div class="tool-icon" style="background:#0f0f0f;color:#fff;">M</div>Midjourney
+    </a>
+    <a href="https://www.kling.ai" target="_blank" class="tool-btn">
+      <div class="tool-icon" style="background:#0d1a2e;color:#4da6ff;">F</div>Flow
+    </a>
+    <a href="https://grok.com" target="_blank" class="tool-btn">
+      <div class="tool-icon" style="background:#111;color:#fff;">G</div>Grok
+    </a>
+    <a href="https://claude.ai" target="_blank" class="tool-btn">
+      <div class="tool-icon" style="background:#1a0e00;color:#C9A84C;">C</div>Claude
+    </a>
+    <a href="https://chatgpt.com" target="_blank" class="tool-btn">
+      <div class="tool-icon" style="background:#0a1f17;color:#10a37f;">G</div>ChatGPT
+    </a>
+  </div>
+  <div class="sidebar-label" style="margin-top:1rem;">Navegação</div>
+  <div class="sidebar-nav">
+    <button class="sidebar-nav-btn active" onclick="setTab('create');closeSidebar()">✦ Criar Modelo</button>
+    <button class="sidebar-nav-btn" onclick="setTab('prompts');closeSidebar()">◈ Prompts</button>
+    <button class="sidebar-nav-btn" onclick="setTab('styles');closeSidebar()">⊡ Estilos</button>
+    <button class="sidebar-nav-btn" onclick="setTab('models');closeSidebar()">⊞ Modelos Salvos</button>
+    <button class="sidebar-nav-btn" onclick="setTab('settings');closeSidebar()">⚙ Configurações</button>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <button class="hamburger" onclick="toggleSidebar()">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="logo-wrap">
+      <div class="logo-main">Candy</div>
+      <div class="logo-dot">·</div>
+      <div class="logo-free">Free</div>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="setTab('create')">Criar</button>
+    <button class="nav-tab" onclick="setTab('prompts')">Prompts</button>
+    <button class="nav-tab" onclick="setTab('styles')">Estilos</button>
+    <button class="nav-tab" onclick="setTab('models')">Modelos</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ==================== TAB: CRIAR ==================== -->
+  <div id="tab-create">
+    <div class="section-header">
+      <div class="section-title">Nova <span>Modelo</span></div>
+    </div>
+    <div class="gold-line"></div>
+
+    <div class="model-name-bar">
+      <label>✦ Nome</label>
+      <input class="model-name-input" id="modelName" placeholder="Nome da modelo..." />
+    </div>
+
+    <div class="mode-bar">
+      <span class="mode-label">Modo</span>
+      <div class="mode-btns">
+        <button class="mode-btn active" onclick="setMode('manual')">✏ Manual</button>
+        <button class="mode-btn" onclick="setMode('suggestive')">◈ Sugestivo</button>
+        <button class="mode-btn" onclick="setMode('auto')">⚡ Automático</button>
+      </div>
+    </div>
+
+    <div class="direction-bar" id="directionBar" style="display:none;">
+      <label>Direção</label>
+      <input class="direction-input" id="directionInput" placeholder="Ex: modelo brasileira, 25 anos, morena, cabelo longo..." />
+      <button class="gen-btn" id="genBtn" onclick="generateAuto()">⚡ Gerar</button>
+    </div>
+
+    <div class="loading-bar" id="loadingBar">
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+      <span class="loading-text">A IA está criando sua modelo...</span>
+    </div>
+
+    <div class="form-section" id="section-rosto">
+      <div class="form-section-header" onclick="toggleSection('rosto')">
+        <div class="form-section-icon">👤</div>
+        <div class="form-section-title">Rosto</div>
+        <div class="form-section-count">16 campos</div>
+        <div class="form-section-chevron">▾</div>
+      </div>
+      <div class="form-section-body">
+        <div class="form-grid" id="grid-rosto"></div>
+      </div>
+    </div>
+
+    <div class="form-section" id="section-corpo">
+      <div class="form-section-header" onclick="toggleSection('corpo')">
+        <div class="form-section-icon">🧍</div>
+        <div class="form-section-title">Corpo</div>
+        <div class="form-section-count">9 campos</div>
+        <div class="form-section-chevron">▾</div>
+      </div>
+      <div class="form-section-body">
+        <div class="form-grid" id="grid-corpo"></div>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn-secondary" onclick="clearForm()">Limpar</button>
+      <button class="btn-primary" onclick="saveModel()">✦ Salvar Modelo</button>
+    </div>
+  </div>
+
+  <!-- ==================== TAB: PROMPTS ==================== -->
+  <div id="tab-prompts" style="display:none;">
+    <div class="section-header">
+      <div class="section-title">Seus <span>Prompts</span></div>
+    </div>
+    <div class="gold-line"></div>
+
+    <div class="prompt-model-bar">
+      <span>Modelo:</span>
+      <select class="field-input" id="promptModelSelect" style="max-width:220px;" onchange="updatePrompts()">
+        <option value="">— Nenhuma selecionada —</option>
+      </select>
+    </div>
+
+    <!-- CORPO -->
+    <div class="prompt-card">
+      <div class="prompt-card-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="form-section-icon">🧍</div>
+          <div class="prompt-card-title">Prompt de Corpo</div>
+        </div>
+        <span class="prompt-card-badge badge-fixed" id="corpo-badge">Base Completo</span>
+      </div>
+      <div class="prompt-type-btns">
+        <button class="ptype-btn active" onclick="setPromptType('corpo','full')">Base Completo</button>
+        <button class="ptype-btn" onclick="setPromptType('corpo','short')">Reduzido</button>
+        <button class="ptype-btn" onclick="setPromptType('corpo','custom')">Personalizado</button>
+      </div>
+      <div class="prompt-body"><div class="prompt-text" id="corpo-text"></div></div>
+      <div class="copy-btns">
+        <button class="copy-btn" onclick="copyPrompt('corpo')" id="copy-corpo">⧉ Copiar Prompt de Corpo</button>
+      </div>
+    </div>
+
+    <!-- ROSTO -->
+    <div class="prompt-card">
+      <div class="prompt-card-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="form-section-icon">👤</div>
+          <div class="prompt-card-title">Prompt de Rosto</div>
+        </div>
+        <span class="prompt-card-badge badge-fixed" id="rosto-badge">Base Completo</span>
+      </div>
+      <div class="prompt-type-btns">
+        <button class="ptype-btn active" onclick="setPromptType('rosto','full')">Base Completo</button>
+        <button class="ptype-btn" onclick="setPromptType('rosto','short')">Reduzido</button>
+        <button class="ptype-btn" onclick="setPromptType('rosto','custom')">Personalizado</button>
+      </div>
+      <div class="prompt-body"><div class="prompt-text" id="rosto-text"></div></div>
+      <div class="copy-btns">
+        <button class="copy-btn" onclick="copyPrompt('rosto')" id="copy-rosto">⧉ Copiar Prompt de Rosto</button>
+      </div>
+    </div>
+
+    <!-- SCENE / CONTENT -->
+    <div class="scene-card">
+      <div class="scene-header">
+        <div class="form-section-icon">📱</div>
+        <div class="scene-title">Prompt de Conteúdo</div>
+        <span class="prompt-card-badge" style="background:rgba(76,175,125,0.1);color:#4CAF7D;border:1px solid rgba(76,175,125,0.2);">Scene Input</span>
+      </div>
+      <div class="scene-body">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:1rem;line-height:1.6;">Descreva o ambiente, look, vibe e contexto em português. A IA adapta para o Scene Input e monta o prompt completo.</div>
+        <div class="scene-input-wrap">
+          <textarea class="scene-textarea" id="sceneInput" placeholder="Ex: café em Paris, tarde ensolarada, look casual, vibe relaxada..."></textarea>
+          <button class="scene-gen-btn" id="sceneGenBtn" onclick="generateScene()">⚡ Gerar</button>
+        </div>
+        <div class="loading-bar" id="sceneLoadingBar">
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+          <span class="loading-text">Montando o prompt de conteúdo...</span>
+        </div>
+        <div class="scene-prompt-out" id="scenePromptOut" style="display:none;">
+          <div class="prompt-text" id="scenePromptText"></div>
+        </div>
+        <div class="copy-btns" id="sceneCopyBar" style="display:none;border-radius:10px;overflow:hidden;">
+          <button class="copy-btn" onclick="copyScene()" id="copy-scene">⧉ Copiar Prompt de Conteúdo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TAB: ESTILOS ==================== -->
+  <div id="tab-styles" style="display:none;">
+    <div class="section-header">
+      <div class="section-title">Biblioteca de <span>Estilos</span></div>
+      <button class="btn-primary" onclick="openStyleModal()" style="font-size:12px;padding:8px 18px;">+ Adicionar Estilo</button>
+    </div>
+    <div class="gold-line"></div>
+    <div class="styles-grid" id="styles-grid"></div>
+  </div>
+
+  <!-- ==================== TAB: MODELOS ==================== -->
+  <div id="tab-models" style="display:none;">
+    <div class="section-header">
+      <div class="section-title">Modelos <span>Salvos</span></div>
+      <button class="btn-primary" onclick="setTab('create')" style="font-size:12px;padding:8px 18px;">+ Nova Modelo</button>
+    </div>
+    <div class="gold-line"></div>
+    <div class="models-grid" id="models-grid"></div>
+  </div>
+
+  <!-- ==================== TAB: SETTINGS ==================== -->
+  <div id="tab-settings" style="display:none;">
+    <div class="section-header">
+      <div class="section-title">⚙ <span>Configurações</span></div>
+    </div>
+    <div class="gold-line"></div>
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;max-width:520px;">
+      <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:0.5rem;">API Key — Anthropic</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.6;">Sua chave fica salva apenas neste navegador. Cada usuário usa sua própria chave.</div>
+      <div class="settings-banner" style="margin-bottom:0;">
+        <label>API KEY</label>
+        <input class="api-input" id="apiKeyInput" type="password" placeholder="sk-ant-..." />
+        <button class="api-save-btn" onclick="saveApiKey()">Salvar</button>
+      </div>
+      <div id="apiStatus" style="margin-top:0.75rem;font-size:12px;color:var(--text-muted);"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL: ADICIONAR ESTILO -->
+<div class="modal-overlay" id="styleModal" style="display:none;" onclick="closeStyleModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">Novo <span style="color:var(--gold)">Estilo</span></div>
+    <div class="modal-field">
+      <label class="modal-label">Nome do Estilo</label>
+      <input class="modal-input" id="styleName" placeholder="Ex: Mirror Selfie, Street Style..." />
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Categoria / Tag</label>
+      <input class="modal-input" id="styleTag" placeholder="Ex: Casual, Lifestyle, Outdoor..." />
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Imagem de Referência</label>
+      <div class="modal-img-placeholder" onclick="document.getElementById('styleImgInput').click()">
+        <span style="font-size:24px;">🖼</span>
+        <span>Clique para fazer upload</span>
+      </div>
+      <img class="modal-img-preview" id="styleImgPreview" />
+      <input type="file" id="styleImgInput" accept="image/*" style="display:none;" onchange="previewStyleImg(event)" />
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Scene Input (Prompt em inglês)</label>
+      <textarea class="modal-textarea" id="stylePrompt" placeholder="Descreva o ambiente, look, vibe e contexto em inglês para este estilo...&#10;&#10;Ex: Cozy apartment living room, golden morning light through sheer curtains, influencer wearing an oversized grey hoodie and black shorts..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeStyleModal()">Cancelar</button>
+      <button class="btn-primary" onclick="saveStyle()">✦ Salvar Estilo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ======= DATA =======
+const ROSTO_FIELDS = [
+  {key:'idade',label:'Idade Aparente',opts:['18-20 anos','21-25 anos','26-30 anos','31-35 anos','36-40 anos']},
+  {key:'etnia',label:'Etnia',opts:['Brasileira','Latina','Europeia','Asiática','Afro-brasileira','Mista','Árabe']},
+  {key:'formato_rosto',label:'Formato do Rosto',opts:['Oval','Redondo','Quadrado','Coração','Losango','Retangular']},
+  {key:'tom_pele',label:'Tom de Pele',opts:['Muito clara','Clara','Média clara','Média','Média escura','Escura','Muito escura']},
+  {key:'tipo_pele',label:'Tipo de Pele',opts:['Lisa','Com sardas','Acne leve','Textura natural','Poros visíveis','Bronzeada']},
+  {key:'formato_olhos',label:'Formato dos Olhos',opts:['Amendoado','Redondo','Puxado','Profundo','Saliente','Caído']},
+  {key:'cor_olhos',label:'Cor dos Olhos',opts:['Castanho escuro','Castanho claro','Verde','Azul','Cinza','Avelã','Mel']},
+  {key:'tamanho_olhos',label:'Tamanho dos Olhos',opts:['Pequenos','Médios','Grandes']},
+  {key:'sobrancelha',label:'Tipo de Sobrancelha',opts:['Arqueada fina','Arqueada grossa','Reta fina','Reta grossa','Natural','Preenchida']},
+  {key:'nariz',label:'Nariz',opts:['Pequeno','Arrebitado','Reto','Largo','Fino','Médio','Adunco']},
+  {key:'labios',label:'Lábios',opts:['Finos','Médios','Volumosos','Carnudos','Assimétricos naturais','Coração']},
+  {key:'dentes',label:'Dentes',opts:['Perfeitos','Naturais','Leve espaçamento','Levemente irregulares','Sorriso largo']},
+  {key:'cabelo_cor',label:'Cabelo — Cor',opts:['Preto','Castanho escuro','Castanho','Castanho claro','Loiro escuro','Loiro','Ruivo','Colorido']},
+  {key:'cabelo_comp',label:'Cabelo — Comprimento',opts:['Curto','Na orelha','No queixo','No ombro','Médio','Longo','Muito longo']},
+  {key:'cabelo_tex',label:'Cabelo — Textura',opts:['Liso','Ondulado','Cacheado','Crespo','Relaxado']},
+  {key:'linha_cabelo',label:'Linha do Cabelo',opts:['Normal','Levemente alta','Alta','Baixa','Em M','Viúva']},
+];
+const CORPO_FIELDS = [
+  {key:'altura',label:'Altura',opts:['1,50m - 1,55m','1,56m - 1,60m','1,61m - 1,65m','1,66m - 1,70m','1,71m - 1,75m','1,76m+']},
+  {key:'biotipo',label:'Biotipo',opts:['Magra','Atlética','Curvilínea','Média','Robusta','Petite']},
+  {key:'proporcao',label:'Proporção Corporal',opts:['Pernas longas','Tronco curto','Equilibrado','Pernas médias','Tronco longo']},
+  {key:'cintura',label:'Tipo de Cintura',opts:['Fina marcada','Média','Larga','Flutuante','Sem definição']},
+  {key:'quadril',label:'Quadril',opts:['Estreito','Médio','Largo','Muito largo','Proporcional']},
+  {key:'pernas',label:'Pernas',opts:['Longas','Torneadas','Finas','Musculosas','Médias','Curtas']},
+  {key:'bracos',label:'Braços',opts:['Finos','Definidos','Suaves','Musculosos','Médios']},
+  {key:'ombros',label:'Ombros',opts:['Estreitos','Médios','Largos','Caídos','Retos']},
+  {key:'postura',label:'Postura Natural',opts:['Ereta','Levemente curvada','Relaxada','Confiante','Delicada']},
+];
+
+const PROMPT_CORPO_FULL = `Ultra-realistic full body character model sheet of the SAME female influencer from the reference image.
+
+Create a single image containing three aligned full-body views side by side:
+1) Front view
+2) Left side profile view
+3) Back view
+
+All three views must be perfectly aligned at the same height and scale.
+Exact same body proportions in all angles.
+
+Neutral anatomical standing pose.
+Feet shoulder-width apart.
+Arms slightly away from the body.
+Hands relaxed.
+Head straight.
+Neutral facial expression.
+
+Preserve EXACT facial structure, bone structure, height ratio, torso length, waist-to-hip ratio, bust proportion, hip width, thigh thickness, arm length and overall silhouette from the reference image.
+No exaggeration. No stylization. No modification of anatomy.
+
+Clothing:
+Simple fitted neutral beige short-sleeve top.
+High-waisted black fitted shorts.
+No transparency. No cleavage. No sensual pose.
+
+Barefoot. Full body visible from head to toes.
+Small margin above head and below feet.
+
+Studio white background. Flat soft studio lighting.
+No dramatic shadows. No cinematic lighting.
+Technical documentation style. Orthographic consistency feel.
+50mm lens equivalent. High anatomical accuracy.
+Realistic skin texture. Natural skin tone.
+8K ultra high resolution.
+Character proportion reference sheet.
+Professional model turnaround sheet.`;
+
+const PROMPT_CORPO_SHORT = `Ultra-realistic full body model sheet, 3 views side by side (front, left profile, back). Same female influencer, exact proportions preserved. Neutral pose, studio white background, flat lighting, 50mm lens, 8K resolution. No stylization, no exaggeration.`;
+
+const PROMPT_ROSTO_FULL = `Ultra-realistic facial reference contact sheet of a young Brazilian female influencer, using the provided reference image strictly for facial identity preservation.
+
+Layout:
+— 9-frame contact sheet (3x3 grid)
+— Neutral studio background
+— Consistent lighting across all frames
+— Same makeup, same hairstyle, same earrings
+— No outfit changes (focus on face only)
+
+Angles required:
+Frame 1: Front-facing, neutral expression
+Frame 2: 45-degree left angle
+Frame 3: 45-degree right angle
+Frame 4: Full left profile
+Frame 5: Full right profile
+Frame 6: Slight chin down angle
+Frame 7: Slight chin up angle
+Frame 8: Over-shoulder subtle glance
+Frame 9: Soft natural smile, front-facing
+
+Facial details:
+— Natural skin texture — Visible pores
+— Subtle highlight on cheekbones
+— Balanced influencer makeup (soft glam)
+— Defined brows — Neutral lip tone
+— Clean hair framing face
+
+Photography specifications:
+— 85mm portrait lens — Studio softbox lighting
+— Even light distribution — No harsh shadows
+— Ultra-realistic skin detail — High dynamic range
+— 8K resolution — Professional beauty photography
+— No distortion — Anatomically accurate proportions
+
+Important:
+— Preserve exact facial identity from reference image
+— No facial structure changes
+— No exaggerated beautification
+— Maintain realism`;
+
+const PROMPT_ROSTO_SHORT = `Ultra-realistic facial reference sheet, 9-frame contact sheet (3x3 grid). Same female influencer, all angles (front, 45° left/right, profiles, chin up/down, over-shoulder, smile). Studio softbox lighting, 85mm portrait lens, 8K resolution, soft glam makeup. Preserve exact facial identity.`;
+
+const SCENE_BASE_PROMPT = `Carefully analyze the reference image and identify the main subject (influencer). Maintain 100% facial fidelity, body proportions, skin tone, hair, and identity consistency. The character must look exactly like the reference person in all variations.
+
+Generate a horizontal 3-panel composition divided into three equal vertical sections (triptych layout). No borders, no text, no numbers, no dividers. The split should feel like a natural Instagram collage.
+
+Each vertical section must present a different realistic influencer-style photo variation, all happening in the same environment and same day.
+
+📱 IMAGE QUALITY (MANDATORY)
+• Shot as if taken with an iPhone
+• Natural smartphone HDR look
+• Slight natural grain
+• Soft computational sharpening
+• Realistic exposure
+• No cinematic lighting
+• No dramatic color grading
+• No ultra-detailed hyper realism
+• Casual Instagram aesthetic
+• Feels spontaneous and natural
+
+📸 PHOTO VARIATIONS (MANDATORY)
+1️⃣ Mirror Photo
+• Influencer taking a mirror selfie
+• Phone visible in hand
+• Natural posture
+• Slightly imperfect framing
+• Casual body angle
+• Authentic reflection lighting
+
+2️⃣ Direct Selfie
+• Front-facing camera perspective
+• Arm slightly extended
+• Natural facial expression
+• Slight perspective distortion typical of phone lens
+• Relaxed and spontaneous mood
+
+3️⃣ Photo Taken by Another Person
+• Natural candid framing
+• Influencer interacting with environment
+• Slight movement or lifestyle pose
+• Looks like a friend took the photo
+• Not posed like a photoshoot
+
+🔒 CONSISTENCY RULES (VERY IMPORTANT)
+• Same influencer across all 3 sections
+• Same outfit • Same environment
+• Same time of day • Same lighting conditions
+• Same hairstyle and makeup
+• No face changes • No body proportion changes
+
+🎨 VISUAL STYLE
+• Natural Instagram aesthetic
+• Lifestyle photography
+• Soft realistic lighting
+• No cinematic depth of field exaggeration
+• No movie look • No studio lighting
+• No fashion editorial vibe
+• Feels like everyday influencer content
+
+🧠 SCENE INPUT
+[SCENE_PLACEHOLDER]`;
+
+// ======= STATE =======
+let currentMode = 'manual';
+let savedModels = JSON.parse(localStorage.getItem('cf_models') || '[]');
+let savedStyles = JSON.parse(localStorage.getItem('cf_styles') || '[]');
+let corpoPromptType = 'full';
+let rostoPromptType = 'full';
+let currentScenePrompt = '';
+let editingStyleId = null;
+let styleImgData = null;
+
+function getApiKey() { return localStorage.getItem('cf_apikey') || ''; }
+
+// ======= TOAST =======
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 2800);
+}
+
+// ======= SIDEBAR =======
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ======= TABS =======
+function setTab(tab) {
+  ['create','prompts','styles','models','settings'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if(el) el.style.display = t===tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.nav-tab').forEach((b,i) => {
+    b.classList.toggle('active', ['create','prompts','styles','models'][i]===tab);
+  });
+  document.querySelectorAll('.sidebar-nav-btn').forEach((b,i) => {
+    b.classList.toggle('active', ['create','prompts','styles','models','settings'][i]===tab);
+  });
+  if(tab==='prompts') { updatePromptModelSelect(); updatePrompts(); }
+  if(tab==='models') renderModels();
+  if(tab==='styles') renderStyles();
+}
+
+// ======= FORM =======
+function buildFields(fields, gridId) {
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = '';
+  fields.forEach(f => {
+    const cell = document.createElement('div');
+    cell.className = 'form-cell';
+    cell.innerHTML = `<div class="field-label">${f.label}</div>
+      ${currentMode==='manual'
+        ? `<input class="field-input" id="field_${f.key}" placeholder="Digite..." />`
+        : `<select class="field-input" id="field_${f.key}">
+            <option value="">Selecionar...</option>
+            ${f.opts.map(o=>`<option>${o}</option>`).join('')}
+           </select>`}`;
+    grid.appendChild(cell);
+  });
+}
+function initForm() {
+  buildFields(ROSTO_FIELDS,'grid-rosto');
+  buildFields(CORPO_FIELDS,'grid-corpo');
+}
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-btn').forEach((b,i) => b.classList.toggle('active',['manual','suggestive','auto'][i]===mode));
+  document.getElementById('directionBar').style.display = mode==='auto' ? 'flex' : 'none';
+  initForm();
+}
+function toggleSection(sec) {
+  document.getElementById('section-'+sec).classList.toggle('collapsed');
+}
+function getFormData() {
+  const data = {};
+  [...ROSTO_FIELDS,...CORPO_FIELDS].forEach(f => {
+    const el = document.getElementById('field_'+f.key);
+    if(el) data[f.key] = el.value;
+  });
+  return data;
+}
+function clearForm() {
+  document.getElementById('modelName').value = '';
+  [...ROSTO_FIELDS,...CORPO_FIELDS].forEach(f => {
+    const el = document.getElementById('field_'+f.key);
+    if(el) el.value = '';
+  });
+}
+
+// ======= GENERATE AUTO =======
+async function generateAuto() {
+  const key = getApiKey();
+  if(!key) { showToast('Configure sua API Key em Configurações',''); setTab('settings'); return; }
+  const direction = document.getElementById('directionInput').value.trim();
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  document.getElementById('loadingBar').classList.add('show');
+
+  const prompt = `Você é um assistente especialista em criar perfis detalhados de modelos para geração de imagens de IA.
+Crie um perfil completo e coerente de uma modelo.
+${direction ? `Direção do usuário: ${direction}` : 'Gere uma modelo completamente aleatória e única.'}
+Responda APENAS com JSON válido (sem markdown, sem explicações):
+{"nome":"Nome feminino elegante","idade":"valor","etnia":"valor","formato_rosto":"valor","tom_pele":"valor","tipo_pele":"valor","formato_olhos":"valor","cor_olhos":"valor","tamanho_olhos":"valor","sobrancelha":"valor","nariz":"valor","labios":"valor","dentes":"valor","cabelo_cor":"valor","cabelo_comp":"valor","cabelo_tex":"valor","linha_cabelo":"valor","altura":"valor","biotipo":"valor","proporcao":"valor","cintura":"valor","quadril":"valor","pernas":"valor","bracos":"valor","ombros":"valor","postura":"valor"}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+    });
+    const data = await res.json();
+    const text = data.content[0].text;
+    const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
+    if(parsed.nome) document.getElementById('modelName').value = parsed.nome;
+    [...ROSTO_FIELDS,...CORPO_FIELDS].forEach(f => {
+      const el = document.getElementById('field_'+f.key);
+      if(el && parsed[f.key]) el.value = parsed[f.key];
+    });
+    showToast('✦ Modelo gerada com sucesso!','success');
+  } catch(e) {
+    showToast('Erro ao gerar modelo. Verifique sua API Key.');
+  }
+  btn.disabled = false;
+  document.getElementById('loadingBar').classList.remove('show');
+}
+
+// ======= SAVE MODEL =======
+function saveModel() {
+  const name = document.getElementById('modelName').value.trim();
+  if(!name) { showToast('Dê um nome à modelo antes de salvar.'); return; }
+  const data = getFormData();
+  const model = {id:Date.now(), name, data, createdAt:new Date().toLocaleDateString('pt-BR')};
+  savedModels.unshift(model);
+  localStorage.setItem('cf_models', JSON.stringify(savedModels));
+  updatePromptModelSelect();
+  showToast(`✦ "${name}" salva com sucesso!`,'success');
+}
+
+// ======= RENDER MODELS =======
+function renderModels() {
+  const grid = document.getElementById('models-grid');
+  if(!savedModels.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">✦</div><div class="empty-text">Nenhuma modelo salva ainda.<br>Crie na aba <strong style="color:var(--gold)">Criar Modelo</strong>.</div></div>`;
+    return;
+  }
+  grid.innerHTML = savedModels.map(m => `
+    <div class="model-card">
+      <div class="model-avatar">${m.name[0]}</div>
+      <div class="model-card-name">${m.name}</div>
+      <div class="model-card-desc">${[m.data.etnia,m.data.idade,m.data.biotipo].filter(Boolean).join(' · ')}</div>
+      <div class="model-card-desc" style="margin-top:3px;">${[m.data.cabelo_cor,m.data.cabelo_comp].filter(Boolean).join(', ')}</div>
+      <div class="model-card-date">${m.createdAt}</div>
+      <div class="model-card-actions">
+        <button class="model-action-btn" onclick="loadModel(${m.id})">✏ Editar</button>
+        <button class="model-action-btn del" onclick="deleteModel(${m.id})">✕ Excluir</button>
+      </div>
+    </div>`).join('');
+}
+function loadModel(id) {
+  const m = savedModels.find(x=>x.id===id);
+  if(!m) return;
+  document.getElementById('modelName').value = m.name;
+  [...ROSTO_FIELDS,...CORPO_FIELDS].forEach(f => {
+    const el = document.getElementById('field_'+f.key);
+    if(el && m.data[f.key]) el.value = m.data[f.key];
+  });
+  setTab('create');
+  showToast(`✦ "${m.name}" carregada!`,'success');
+}
+function deleteModel(id) {
+  const m = savedModels.find(x=>x.id===id);
+  if(!m || !confirm(`Excluir "${m.name}"?`)) return;
+  savedModels = savedModels.filter(x=>x.id!==id);
+  localStorage.setItem('cf_models',JSON.stringify(savedModels));
+  renderModels();
+  showToast('Modelo excluída.');
+}
+
+// ======= PROMPTS =======
+function updatePromptModelSelect() {
+  const sel = document.getElementById('promptModelSelect');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— Nenhuma selecionada —</option>';
+  savedModels.forEach(m => sel.innerHTML += `<option value="${m.id}">${m.name}</option>`);
+  if(cur) sel.value = cur;
+  updatePrompts();
+}
+function getSelectedModel() {
+  const id = parseInt(document.getElementById('promptModelSelect').value);
+  return savedModels.find(x=>x.id===id) || null;
+}
+function buildCustomCorpo(m) {
+  const d = m.data;
+  const chars = [d.altura&&`Height: ${d.altura}`,d.biotipo&&`Body type: ${d.biotipo}`,d.proporcao&&`Proportions: ${d.proporcao}`,d.cintura&&`Waist: ${d.cintura}`,d.quadril&&`Hips: ${d.quadril}`,d.pernas&&`Legs: ${d.pernas}`,d.bracos&&`Arms: ${d.bracos}`,d.ombros&&`Shoulders: ${d.ombros}`,d.postura&&`Posture: ${d.postura}`].filter(Boolean).join('. ');
+  return `Ultra-realistic full body character model sheet of the SAME female influencer: ${m.name}.\n\nPhysical profile: ${chars}.\n\nCreate a single image containing three aligned full-body views side by side:\n1) Front view  2) Left side profile view  3) Back view\n\nAll views must be perfectly aligned. Preserve EXACT body proportions. No exaggeration, no stylization.\n\nClothing: Simple fitted neutral beige short-sleeve top. High-waisted black fitted shorts. No transparency.\nBarefoot. Full body visible. Studio white background. Flat soft lighting. 8K resolution.`;
+}
+function buildCustomRosto(m) {
+  const d = m.data;
+  const chars = [d.idade&&`apparent age ${d.idade}`,d.etnia&&`${d.etnia} ethnicity`,d.formato_rosto&&`${d.formato_rosto} face shape`,d.tom_pele&&`${d.tom_pele} skin tone`,d.tipo_pele&&`${d.tipo_pele} skin`,d.formato_olhos&&`${d.formato_olhos} eyes`,d.cor_olhos&&`${d.cor_olhos} eye color`,d.sobrancelha&&`${d.sobrancelha} eyebrows`,d.nariz&&`${d.nariz} nose`,d.labios&&`${d.labios} lips`,d.cabelo_cor&&`${d.cabelo_cor} hair`,d.cabelo_comp&&`${d.cabelo_comp} length`,d.cabelo_tex&&`${d.cabelo_tex} texture`].filter(Boolean).join(', ');
+  return `Ultra-realistic facial reference contact sheet of ${m.name}: a female influencer with ${chars}.\n\nLayout: 9-frame contact sheet (3x3 grid). Neutral studio background. Consistent lighting. Same makeup and hairstyle across all frames.\n\nAngles: Frame 1: Front neutral | Frame 2: 45° left | Frame 3: 45° right | Frame 4: Full left profile | Frame 5: Full right profile | Frame 6: Chin down | Frame 7: Chin up | Frame 8: Over-shoulder | Frame 9: Natural smile.\n\n85mm portrait lens. Studio softbox lighting. 8K resolution. Ultra-realistic skin detail. Soft glam makeup. Preserve exact facial identity.`;
+}
+function updatePrompts() {
+  const m = getSelectedModel();
+  const badges = {full:'Base Completo',short:'Reduzido',custom:'Personalizado'};
+  const badgeClass = {full:'badge-fixed',short:'badge-reduced',custom:'badge-custom'};
+  let ct, rt;
+  if(corpoPromptType==='full') ct=PROMPT_CORPO_FULL;
+  else if(corpoPromptType==='short') ct=PROMPT_CORPO_SHORT;
+  else ct = m ? buildCustomCorpo(m) : '⚠ Selecione uma modelo para ver o prompt personalizado.';
+  if(rostoPromptType==='full') rt=PROMPT_ROSTO_FULL;
+  else if(rostoPromptType==='short') rt=PROMPT_ROSTO_SHORT;
+  else rt = m ? buildCustomRosto(m) : '⚠ Selecione uma modelo para ver o prompt personalizado.';
+  document.getElementById('corpo-text').textContent = ct;
+  document.getElementById('rosto-text').textContent = rt;
+  document.getElementById('corpo-badge').textContent = badges[corpoPromptType];
+  document.getElementById('corpo-badge').className = 'prompt-card-badge '+badgeClass[corpoPromptType];
+  document.getElementById('rosto-badge').textContent = badges[rostoPromptType];
+  document.getElementById('rosto-badge').className = 'prompt-card-badge '+badgeClass[rostoPromptType];
+}
+function setPromptType(card, type) {
+  if(card==='corpo') corpoPromptType=type;
+  else rostoPromptType=type;
+  const idx = card==='corpo' ? 0 : 1;
+  document.querySelectorAll('.prompt-card')[idx].querySelectorAll('.ptype-btn').forEach((b,i) => b.classList.toggle('active',['full','short','custom'][i]===type));
+  updatePrompts();
+}
+function copyPrompt(card) {
+  const text = document.getElementById(card+'-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-'+card);
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML=orig; btn.classList.remove('copied'); }, 2200);
+  });
+}
+
+// ======= SCENE =======
+async function generateScene() {
+  const key = getApiKey();
+  if(!key) { showToast('Configure sua API Key em Configurações'); setTab('settings'); return; }
+  const input = document.getElementById('sceneInput').value.trim();
+  if(!input) { showToast('Descreva o ambiente e contexto antes de gerar.'); return; }
+  const m = getSelectedModel();
+  const btn = document.getElementById('sceneGenBtn');
+  btn.disabled = true;
+  document.getElementById('sceneLoadingBar').classList.add('show');
+  document.getElementById('scenePromptOut').style.display = 'none';
+  document.getElementById('sceneCopyBar').style.display = 'none';
+
+  const modelDesc = m ? `A modelo se chama ${m.name}${m.data.etnia ? `, é ${m.data.etnia}` : ''}${m.data.idade ? `, ${m.data.idade}` : ''}.` : '';
+
+  const prompt = `Você é um especialista em prompts para geração de imagens de IA de influencers.
+${modelDesc}
+O usuário descreveu este contexto em português: "${input}"
+
+Sua tarefa: criar um Scene Input em inglês detalhado, rico e natural para o seguinte template de prompt de conteúdo de Instagram.
+
+Retorne APENAS o texto do Scene Input em inglês, sem introdução, sem explicação, sem aspas. Deve descrever: ambiente, localização, decoração, iluminação, outfit completo da influencer, acessórios, vibe, hora do dia, atmosfera emocional. Seja rico em detalhes visuais. Máximo 120 palavras.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,messages:[{role:'user',content:prompt}]})
+    });
+    const data = await res.json();
+    const sceneText = data.content[0].text.trim();
+    currentScenePrompt = SCENE_BASE_PROMPT.replace('[SCENE_PLACEHOLDER]', sceneText);
+    document.getElementById('scenePromptText').textContent = currentScenePrompt;
+    document.getElementById('scenePromptOut').style.display = 'block';
+    document.getElementById('sceneCopyBar').style.display = 'flex';
+    showToast('✦ Prompt de conteúdo gerado!','success');
+  } catch(e) {
+    showToast('Erro ao gerar. Verifique sua API Key.');
+  }
+  btn.disabled = false;
+  document.getElementById('sceneLoadingBar').classList.remove('show');
+}
+function copyScene() {
+  if(!currentScenePrompt) return;
+  navigator.clipboard.writeText(currentScenePrompt).then(() => {
+    const btn = document.getElementById('copy-scene');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML=orig; btn.classList.remove('copied'); }, 2200);
+  });
+}
+
+// ======= STYLES =======
+function openStyleModal(id=null) {
+  editingStyleId = id;
+  styleImgData = null;
+  if(id) {
+    const s = savedStyles.find(x=>x.id===id);
+    if(s) {
+      document.getElementById('styleName').value = s.name;
+      document.getElementById('styleTag').value = s.tag||'';
+      document.getElementById('stylePrompt').value = s.prompt||'';
+      if(s.img) {
+        const prev = document.getElementById('styleImgPreview');
+        prev.src = s.img; prev.style.display='block';
+        document.querySelector('.modal-img-placeholder').style.display='none';
+        styleImgData = s.img;
+      }
+    }
+  } else {
+    document.getElementById('styleName').value = '';
+    document.getElementById('styleTag').value = '';
+    document.getElementById('stylePrompt').value = '';
+    document.getElementById('styleImgPreview').style.display='none';
+    document.querySelector('.modal-img-placeholder').style.display='flex';
+  }
+  document.getElementById('styleModal').style.display='flex';
+}
+function closeStyleModal(e) {
+  if(e && e.target!==document.getElementById('styleModal')) return;
+  document.getElementById('styleModal').style.display='none';
+  editingStyleId=null; styleImgData=null;
+}
+function previewStyleImg(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = r => {
+    styleImgData = r.target.result;
+    const prev = document.getElementById('styleImgPreview');
+    prev.src = styleImgData; prev.style.display='block';
+    document.querySelector('.modal-img-placeholder').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+function saveStyle() {
+  const name = document.getElementById('styleName').value.trim();
+  if(!name) { showToast('Dê um nome ao estilo.'); return; }
+  const style = {
+    id: editingStyleId || Date.now(),
+    name,
+    tag: document.getElementById('styleTag').value.trim(),
+    prompt: document.getElementById('stylePrompt').value.trim(),
+    img: styleImgData,
+    createdAt: new Date().toLocaleDateString('pt-BR')
+  };
+  if(editingStyleId) {
+    savedStyles = savedStyles.map(x=>x.id===editingStyleId ? style : x);
+  } else {
+    savedStyles.unshift(style);
+  }
+  localStorage.setItem('cf_styles', JSON.stringify(savedStyles));
+  document.getElementById('styleModal').style.display='none';
+  renderStyles();
+  showToast(`✦ "${name}" salvo!`,'success');
+}
+function deleteStyle(id) {
+  const s = savedStyles.find(x=>x.id===id);
+  if(!s||!confirm(`Excluir "${s.name}"?`)) return;
+  savedStyles = savedStyles.filter(x=>x.id!==id);
+  localStorage.setItem('cf_styles',JSON.stringify(savedStyles));
+  renderStyles();
+  showToast('Estilo excluído.');
+}
+function useStyle(id) {
+  const s = savedStyles.find(x=>x.id===id);
+  if(!s) return;
+  setTab('prompts');
+  setTimeout(() => {
+    document.getElementById('sceneInput').value = s.prompt;
+    showToast(`✦ Estilo "${s.name}" aplicado!`,'success');
+  }, 100);
+}
+function renderStyles() {
+  const grid = document.getElementById('styles-grid');
+  if(!savedStyles.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">⊡</div><div class="empty-text">Nenhum estilo adicionado ainda.<br>Clique em <strong style="color:var(--gold)">+ Adicionar Estilo</strong> para começar.</div></div>`;
+    return;
+  }
+  grid.innerHTML = savedStyles.map(s => `
+    <div class="style-card">
+      ${s.img
+        ? `<img class="style-card-img" src="${s.img}" alt="${s.name}" />`
+        : `<div class="style-card-img-placeholder">🖼</div>`}
+      <div class="style-card-body">
+        <div class="style-card-name">${s.name}</div>
+        ${s.tag ? `<div class="style-card-tag">${s.tag}</div>` : ''}
+        <div class="style-card-actions">
+          <button class="model-action-btn" style="font-size:11px;" onclick="useStyle(${s.id})">▶ Usar</button>
+          <button class="model-action-btn" style="font-size:11px;" onclick="openStyleModal(${s.id})">✏</button>
+          <button class="model-action-btn del" style="font-size:11px;" onclick="deleteStyle(${s.id})">✕</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ======= API KEY =======
+function saveApiKey() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if(!key) { showToast('Cole sua API Key antes de salvar.'); return; }
+  localStorage.setItem('cf_apikey', key);
+  document.getElementById('apiStatus').textContent = '✦ API Key salva com sucesso!';
+  document.getElementById('apiStatus').style.color = 'var(--success)';
+  showToast('✦ API Key salva!','success');
+}
+function loadApiKeyUI() {
+  const key = getApiKey();
+  if(key) {
+    document.getElementById('apiKeyInput').value = key;
+    document.getElementById('apiStatus').textContent = '✦ API Key configurada';
+    document.getElementById('apiStatus').style.color = 'var(--success)';
+  }
+}
+
+// ======= INIT =======
+initForm();
+updatePrompts();
+loadApiKeyUI();
+</script>
+</body>
+</html>
