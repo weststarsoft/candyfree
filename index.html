@@ -674,15 +674,15 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
     </div>
     <div class="accent-line"></div>
 
-    <!-- PROMPT DE CONTEÚDO -->
+    <!-- SELFIE DA MODELO -->
     <div class="scene-card">
       <div class="scene-header">
-        <div class="form-section-icon">🎬</div>
+        <div class="form-section-icon">📱</div>
         <div style="flex:1;">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--text);">Prompt de Conteúdo</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Gerador de Scene Input com IA</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--text);">Selfie da Modelo</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Cena de validação — testa a fidelidade da identidade</div>
         </div>
-        <span class="badge badge-custom">Scene Input</span>
+        <span class="badge badge-custom">Validação</span>
       </div>
       <div class="scene-body">
         <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
@@ -693,18 +693,18 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
             </select>
           </div>
           <div style="flex:1;min-width:200px;">
-            <div class="field-label" style="margin-bottom:6px;">Contexto (pt-BR)</div>
-            <textarea class="scene-context-input" id="sceneContext" placeholder="Ex: café em Paris, tarde ensolarada, look casual bege..."></textarea>
+            <div class="field-label" style="margin-bottom:6px;">Ambiente e look (pt-BR)</div>
+            <textarea class="scene-context-input" id="sceneContext" placeholder="Ex: café minimalista, look casual bege, manhã de domingo..."></textarea>
           </div>
         </div>
         <div style="display:flex;gap:8px;margin-bottom:1rem;">
-          <button class="gen-btn" style="flex:1;" onclick="generateScene()">⚡ Gerar Scene Input</button>
+          <button class="gen-btn" style="flex:1;" onclick="generateScene()">📱 Gerar Selfie Prompt</button>
         </div>
         <div class="scene-result">
-          <div class="scene-result-text" id="sceneResult">O prompt de conteúdo aparecerá aqui...</div>
+          <div class="scene-result-text" id="sceneResult">O prompt de selfie aparecerá aqui...</div>
         </div>
         <div class="scene-actions">
-          <button class="copy-btn" onclick="copyScene()" id="copySceneBtn">⧉ Copiar Prompt Completo</button>
+          <button class="copy-btn" onclick="copyScene()" id="copySceneBtn">⧉ Copiar Prompt</button>
         </div>
       </div>
     </div>
@@ -1157,11 +1157,9 @@ Important:
 
 const PROMPT_ROSTO_SHORT=`Ultra-realistic facial reference sheet, 9-frame contact sheet (3x3 grid). Same female influencer, all angles (front, 45° left/right, profiles, chin up/down, over-shoulder, smile). Studio softbox lighting, 85mm portrait lens, 8K resolution, soft glam makeup. Preserve exact facial identity.`;
 
-const PROMPT_CONTENT_BASE=`Carefully analyze the reference image and identify the main subject (influencer). Maintain 100% facial fidelity, body proportions, skin tone, hair, and identity consistency. The character must look exactly like the reference person in all variations.
-Generate a horizontal 3-panel composition divided into three equal vertical sections (triptych layout). No borders, no text, no numbers, no dividers. The split should feel like a natural Instagram collage.
-Each vertical section must present a different realistic influencer-style photo variation, all happening in the same environment and same day.
+const PROMPT_SELFIE_BASE=`Ultra-realistic selfie photo of [NAME]. Front-facing camera perspective, arm slightly extended toward lens. Natural facial expression, relaxed and spontaneous mood. Slight perspective distortion typical of phone lens. Face and upper body clearly visible.
 
-📱 IMAGE QUALITY (MANDATORY)
+📱 IMAGE QUALITY
 • Shot as if taken with an iPhone
 • Natural smartphone HDR look
 • Slight natural grain
@@ -1169,54 +1167,16 @@ Each vertical section must present a different realistic influencer-style photo 
 • Realistic exposure
 • No cinematic lighting
 • No dramatic color grading
-• No ultra-detailed hyper realism
 • Casual Instagram aesthetic
-• Feels spontaneous and natural
+• Feels spontaneous and authentic
 
-📸 PHOTO VARIATIONS (MANDATORY)
-1️⃣ Mirror Photo
-• Influencer taking a mirror selfie
-• Phone visible in hand
-• Natural posture
-• Slightly imperfect framing
-• Casual body angle
-• Authentic reflection lighting
-
-2️⃣ Direct Selfie
-• Front-facing camera perspective
-• Arm slightly extended
-• Natural facial expression
-• Slight perspective distortion typical of phone lens
-• Relaxed and spontaneous mood
-
-3️⃣ Photo Taken by Another Person
-• Natural candid framing
-• Influencer interacting with environment
-• Slight movement or lifestyle pose
-• Looks like a friend took the photo
-• Not posed like a photoshoot
-
-🔒 CONSISTENCY RULES (VERY IMPORTANT)
-• Same influencer across all 3 sections
-• Same outfit
-• Same environment
-• Same time of day
-• Same lighting conditions
-• Same hairstyle and makeup
+🔒 IDENTITY RULES
+• Preserve exact facial identity from reference image
+• Same skin tone, same hair, same facial structure
+• No beautification or idealization
 • No face changes
-• No body proportion changes
 
-🎨 VISUAL STYLE
-• Natural Instagram aesthetic
-• Lifestyle photography
-• Soft realistic lighting
-• No cinematic depth of field exaggeration
-• No movie look
-• No studio lighting
-• No fashion editorial vibe
-• Feels like everyday influencer content
-
-🧠 SCENE INPUT
+📍 SCENE
 `;
 
 // ===== STATE =====
@@ -1386,19 +1346,20 @@ async function generateAuto(){
   }
 }
 
-// ===== SCENE GENERATE =====
+// ===== SELFIE GENERATE =====
 async function generateScene(){
   if(!apiKey){showToast('⚠ Configure sua API Key primeiro!');openSettings();return;}
   const ctx=document.getElementById('sceneContext').value.trim();
-  if(!ctx){showToast('⚠ Descreva o contexto da cena!');return;}
+  if(!ctx){showToast('⚠ Descreva o ambiente e o look!');return;}
 
   const modelId=document.getElementById('sceneModelSel').value;
   const model=savedModels.find(m=>m.id==modelId);
+  const modelName=model?model.name:'a female influencer';
 
   const btn=document.querySelector('[onclick="generateScene()"]');
   const orig=btn.textContent;
   btn.textContent='Gerando...';btn.disabled=true;
-  document.getElementById('sceneResult').textContent='Gerando scene input...';
+  document.getElementById('sceneResult').textContent='Gerando prompt de selfie...';
 
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{
@@ -1406,21 +1367,22 @@ async function generateScene(){
       headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
-        max_tokens:600,
-        system:'Você é especialista em criar Scene Inputs para geração de imagens de influencers virtuais. Responda em inglês, de forma descritiva e cinematográfica, em um parágrafo fluido. Sem marcadores, sem títulos.',
-        messages:[{role:'user',content:`Crie um Scene Input descritivo em inglês para o prompt de geração de imagem de uma influencer virtual.
+        max_tokens:300,
+        system:'You are an expert at writing scene descriptions for AI image generation of virtual influencers. Write a single concise paragraph in English describing the environment, outfit, lighting and mood. Be specific and visual. No bullet points, no titles, no instructions — just a flowing scene description.',
+        messages:[{role:'user',content:`Write a scene description in English for a selfie photo of a virtual influencer.
 
-Contexto (pt-BR): ${ctx}
-${model?`\nCaracterísticas da modelo: ${Object.entries(model.data).filter(([,v])=>v).map(([k,v])=>`${k}: ${v}`).join(', ')}`:''}`}]
+Context (pt-BR): ${ctx}
+${model?`Influencer name: ${modelName}`:''}`}]
       })
     });
     const data=await res.json();
     const scene=data.content?.[0]?.text||'';
-    currentSceneResult=PROMPT_CONTENT_BASE+scene;
-    document.getElementById('sceneResult').textContent=PROMPT_CONTENT_BASE+scene;
-    showToast('✓ Scene Input gerado!');
+    const fullPrompt=PROMPT_SELFIE_BASE.replace('[NAME]',modelName)+scene;
+    currentSceneResult=fullPrompt;
+    document.getElementById('sceneResult').textContent=fullPrompt;
+    showToast('✓ Selfie prompt gerado!');
   }catch(e){
-    showToast('⚠ Erro ao gerar scene input.');
+    showToast('⚠ Erro ao gerar prompt.');
   }finally{
     btn.textContent=orig;btn.disabled=false;
   }
@@ -1428,11 +1390,11 @@ ${model?`\nCaracterísticas da modelo: ${Object.entries(model.data).filter(([,v]
 
 function copyScene(){
   const txt=currentSceneResult||document.getElementById('sceneResult').textContent;
-  if(!txt||txt.includes('aparecerá aqui')){showToast('⚠ Gere um scene input primeiro!');return;}
+  if(!txt||txt.includes('aparecerá aqui')||txt.includes('Gerando')){showToast('⚠ Gere o prompt primeiro!');return;}
   navigator.clipboard.writeText(txt).then(()=>{
     const btn=document.getElementById('copySceneBtn');
     btn.textContent='✓ Copiado!';btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='⧉ Copiar Prompt Completo';btn.classList.remove('copied');},2000);
+    setTimeout(()=>{btn.textContent='⧉ Copiar Prompt';btn.classList.remove('copied');},2000);
   });
 }
 
@@ -1698,7 +1660,7 @@ function viewStyle(id){
   const img=document.getElementById('styleViewImg');
   if(s.img){img.src=s.img;img.style.display='block';}else{img.style.display='none';}
   document.getElementById('styleViewScene').textContent=s.scene;
-  const full=PROMPT_CONTENT_BASE+s.scene;
+  const full=PROMPT_SELFIE_BASE.replace('[NAME]','a female influencer')+s.scene;
   document.getElementById('styleViewFull').textContent=full;
   currentStyleScene=full;
   document.getElementById('modal-style-view').classList.add('open');
