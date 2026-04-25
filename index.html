@@ -3,35 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ModelStudio</title>
+<title>Candy — Model Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
   --pink:#FF6FD8;
   --pink-dim:rgba(255,111,216,0.6);
-  --pink-soft:rgba(255,111,216,0.12);
-  --pink-border:rgba(255,111,216,0.25);
+  --pink-soft:rgba(255,111,216,0.10);
+  --pink-border:rgba(255,111,216,0.28);
   --cyan:#3BECFF;
   --cyan-soft:rgba(59,236,255,0.1);
   --yellow:#FFE45E;
+  --green:#4AE89A;
   --bg:#0A0A0B;
-  --bg-card:rgba(18,18,22,0.88);
-  --bg-card2:rgba(22,22,28,0.92);
-  --bg-input:#FFFFFF;
-  --border:rgba(255,111,216,0.15);
-  --border-subtle:rgba(255,255,255,0.06);
+  --bg-card:rgba(14,14,18,0.75);
+  --bg-card2:rgba(18,18,24,0.85);
+  --bg-input:rgba(255,255,255,0.06);
+  --bg-input-solid:#FFFFFF;
+  --border:rgba(255,111,216,0.18);
+  --border-subtle:rgba(255,255,255,0.07);
   --text:#F0EDE6;
   --text-sec:#9A96A0;
   --text-muted:#4A4850;
   --success:#4AE89A;
-  --radius:10px;
+  --radius:11px;
   --header-h:64px;
 }
-body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-height:100vh;overflow-x:hidden;}
 
-/* ===== SCROLLBAR ===== */
+/* ===== BASE ===== */
+body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-height:100vh;overflow-x:hidden;}
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
@@ -40,10 +42,10 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 .header{
   position:fixed;top:0;left:0;right:0;height:var(--header-h);
   background:#FFFFFF;
-  border-bottom:2px solid var(--pink);
+  border-bottom:2.5px solid var(--pink);
   display:flex;align-items:center;justify-content:space-between;
   padding:0 1.5rem;z-index:200;
-  box-shadow:0 2px 20px rgba(255,111,216,0.15);
+  box-shadow:0 2px 24px rgba(255,111,216,0.18);
 }
 .header-left{display:flex;align-items:center;gap:14px;}
 .hamburger{
@@ -51,13 +53,16 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
   border:2px solid var(--pink);border-radius:9px;
   cursor:pointer;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:5px;
-  transition:all 0.2s;box-shadow:0 0 10px rgba(255,111,216,0.2);
+  transition:all 0.2s;box-shadow:0 0 10px rgba(255,111,216,0.15);
 }
-.hamburger:hover{background:var(--pink-soft);box-shadow:0 0 16px rgba(255,111,216,0.4);}
-.hamburger span{display:block;width:16px;height:1.5px;background:var(--pink);border-radius:2px;}
-.logo-img{height:36px;object-fit:contain;}
+.hamburger:hover{background:var(--pink-soft);box-shadow:0 0 18px rgba(255,111,216,0.35);}
+.hamburger span{display:block;width:16px;height:1.5px;background:var(--pink);border-radius:2px;transition:all 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+.logo-img{height:38px;object-fit:contain;}
 .logo-fallback{
-  font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;
+  font-family:'Lilita One',cursive;font-size:22px;
   background:linear-gradient(135deg,var(--pink),var(--cyan));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
   letter-spacing:1px;
@@ -65,26 +70,26 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 .header-nav{display:flex;gap:4px;background:#F4F4F6;border-radius:10px;padding:4px;}
 .nav-tab{
   padding:7px 18px;border-radius:7px;border:none;background:none;
-  color:#666;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+  color:#777;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
   cursor:pointer;transition:all 0.2s;white-space:nowrap;
 }
-.nav-tab.active{background:linear-gradient(135deg,var(--pink),var(--cyan));color:#fff;}
+.nav-tab.active{background:linear-gradient(135deg,var(--pink),var(--cyan));color:#fff;box-shadow:0 2px 10px rgba(255,111,216,0.35);}
 .nav-tab:hover:not(.active){color:#111;background:#E8E8EC;}
 .header-right{display:flex;align-items:center;gap:10px;}
 .btn-settings{
   width:36px;height:36px;border-radius:9px;border:2px solid var(--pink);
   background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
   font-size:16px;transition:all 0.2s;color:var(--pink);
-  box-shadow:0 0 10px rgba(255,111,216,0.2);
+  box-shadow:0 0 10px rgba(255,111,216,0.15);
 }
-.btn-settings:hover{background:var(--pink-soft);box-shadow:0 0 16px rgba(255,111,216,0.4);}
+.btn-settings:hover{background:var(--pink-soft);box-shadow:0 0 18px rgba(255,111,216,0.35);}
 
 /* ===== SIDEBAR ===== */
-.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:299;display:none;backdrop-filter:blur(3px);}
+.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:299;display:none;backdrop-filter:blur(4px);transition:opacity 0.3s;}
 .sidebar-overlay.open{display:block;}
 .sidebar{
   position:fixed;left:0;top:0;bottom:0;width:270px;
-  background:#111116;border-right:1px solid var(--border);
+  background:#0d0d12;border-right:1px solid var(--border);
   transform:translateX(-270px);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
   z-index:300;display:flex;flex-direction:column;padding:1.5rem;
   padding-top:calc(var(--header-h) + 1.5rem);
@@ -92,24 +97,24 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 .sidebar.open{transform:translateX(0);}
 .sidebar-label{
   font-size:10px;letter-spacing:3px;text-transform:uppercase;
-  color:var(--pink-dim);margin-bottom:1rem;font-weight:500;
+  color:var(--pink-dim);margin-bottom:1rem;font-weight:600;
 }
 .tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .tool-btn{
-  background:var(--bg-card);border:1px solid var(--border-subtle);
+  background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);
   border-radius:var(--radius);padding:14px 10px;display:flex;
   flex-direction:column;align-items:center;gap:8px;cursor:pointer;
   transition:all 0.2s;text-decoration:none;color:var(--text-sec);
   font-size:11px;font-weight:500;letter-spacing:0.3px;
 }
-.tool-btn:hover{border-color:var(--pink-border);color:var(--text);transform:translateY(-2px);}
+.tool-btn:hover{border-color:var(--pink-border);color:var(--text);transform:translateY(-2px);background:var(--pink-soft);}
 .tool-icon{
   width:38px;height:38px;border-radius:9px;
   display:flex;align-items:center;justify-content:center;
   font-size:16px;font-weight:700;
 }
 .sidebar-divider{height:1px;background:var(--border-subtle);margin:1.25rem 0;}
-.sidebar-version{font-size:11px;color:var(--text-muted);text-align:center;margin-top:auto;}
+.sidebar-version{font-size:11px;color:var(--text-muted);text-align:center;margin-top:auto;font-style:italic;}
 
 /* ===== BACKGROUND ===== */
 .bg-layer{
@@ -123,94 +128,88 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
   position:fixed;inset:0;z-index:0;
   margin-top:var(--header-h);
   pointer-events:none;
-  background:radial-gradient(ellipse at center, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.82) 40%, rgba(255,255,255,0.45) 70%, rgba(255,255,255,0) 100%);
+  background:radial-gradient(ellipse 75% 70% at 50% 40%, rgba(250,248,255,0.93) 0%, rgba(248,244,255,0.82) 45%, rgba(240,238,248,0.5) 70%, rgba(240,238,248,0) 100%);
 }
 
 /* ===== MAIN ===== */
 .main{
-  margin-top:var(--header-h);padding:2rem 1.5rem;
+  margin-top:var(--header-h);padding:2rem 1.5rem 3rem;
   max-width:980px;margin-left:auto;margin-right:auto;
   position:relative;z-index:2;
 }
 
 /* ===== SECTION HEADER ===== */
-.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
-.section-title{
-  font-family:'Lilita One',cursive;font-size:30px;font-weight:400;letter-spacing:0.5px;
-  color:#1a1a1a;
-}
-.section-title span{
-  color:#1a1a1a;
-  background:none;
-  -webkit-text-fill-color:#1a1a1a;
-  filter:none;
-}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;}
+.section-title{font-family:'Lilita One',cursive;font-size:28px;font-weight:400;letter-spacing:0.3px;color:#1a1a1a;}
+.section-title span{color:#1a1a1a;}
 .accent-line{
   height:3px;
   background:linear-gradient(90deg,var(--pink),var(--cyan),rgba(59,236,255,0));
-  border-radius:2px;
-  margin-bottom:1.5rem;
-  box-shadow:0 0 12px rgba(255,111,216,0.5);
+  border-radius:2px;margin-bottom:1.5rem;
+  box-shadow:0 0 14px rgba(255,111,216,0.45);
 }
 
 /* ===== MODE BAR ===== */
 .mode-bar{
-  background:rgba(14,14,18,0.7);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  background:var(--bg-card);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border:1px solid rgba(255,111,216,0.2);
   border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem;
-  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
 }
-.mode-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);font-weight:500;}
+.mode-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);font-weight:600;}
 .mode-btns{display:flex;gap:8px;flex:1;}
 .mode-btn{
   padding:7px 18px;border-radius:8px;border:1px solid var(--border-subtle);
   background:none;color:var(--text-sec);font-family:'DM Sans',sans-serif;
   font-size:13px;cursor:pointer;transition:all 0.2s;
 }
-.mode-btn.active{border-color:var(--pink);color:var(--pink);background:var(--pink-soft);}
+.mode-btn.active{border-color:var(--pink);color:var(--pink);background:var(--pink-soft);box-shadow:0 0 12px rgba(255,111,216,0.2);}
 .mode-btn:hover:not(.active){color:var(--text);border-color:rgba(255,255,255,0.15);}
 
 /* ===== DIRECTION BAR ===== */
 .direction-bar{
   display:flex;gap:10px;align-items:center;
-  background:#FFFFFF;border:1.5px solid rgba(255,111,216,0.2);
+  background:var(--bg-card);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1.5px solid rgba(255,111,216,0.2);
   border-radius:12px;padding:0.75rem 1rem;margin-bottom:1.25rem;
   transition:border-color 0.2s;
 }
 .direction-bar:focus-within{border-color:var(--pink);}
-.direction-bar label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--pink-dim);white-space:nowrap;font-weight:500;}
-.direction-input{flex:1;background:none;border:none;outline:none;color:#1a1a1a;font-family:'DM Sans',sans-serif;font-size:14px;font-style:italic;}
-.direction-input::placeholder{color:#aaa;font-style:italic;}
+.direction-bar label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--pink-dim);white-space:nowrap;font-weight:600;}
+.direction-input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-style:italic;}
+.direction-input::placeholder{color:var(--text-muted);font-style:italic;}
 .gen-btn{
   padding:8px 22px;border-radius:8px;border:none;
   background:linear-gradient(135deg,var(--pink),var(--cyan));
   color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;
   font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap;
+  box-shadow:0 2px 12px rgba(255,111,216,0.3);
 }
-.gen-btn:hover{opacity:0.85;transform:translateY(-1px);}
-.gen-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;}
+.gen-btn:hover{opacity:0.88;transform:translateY(-1px);box-shadow:0 4px 18px rgba(255,111,216,0.45);}
+.gen-btn:disabled{opacity:0.32;cursor:not-allowed;transform:none;box-shadow:none;}
 
 /* ===== MODEL NAME BAR ===== */
 .model-name-bar{
-  background:rgba(14,14,18,0.7);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border:1px solid rgba(255,111,216,0.3);
+  background:var(--bg-card);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,111,216,0.28);
   border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem;
-  display:flex;align-items:center;gap:12px;
+  display:flex;align-items:center;gap:14px;
 }
-.model-name-bar label{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--pink);white-space:nowrap;}
+.model-name-bar label{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--pink);white-space:nowrap;font-weight:500;}
 .model-name-input{
-  flex:1;background:#FFFFFF;border:1.5px solid rgba(255,111,216,0.2);
-  border-radius:8px;padding:8px 14px;color:#1a1a1a;
+  flex:1;background:var(--bg-input-solid);border:1.5px solid rgba(255,111,216,0.22);
+  border-radius:8px;padding:9px 14px;color:#1a1a1a;
   font-family:'Lilita One',cursive;font-size:18px;outline:none;transition:border-color 0.2s;
 }
 .model-name-input:focus{border-color:var(--pink);}
-.model-name-input::placeholder{color:#bbb;font-style:italic;font-family:'DM Sans',sans-serif;font-size:14px;}
+.model-name-input::placeholder{color:#bbb;font-style:italic;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;}
 
 /* ===== LOADING ===== */
 .loading-bar{
-  display:none;align-items:center;gap:10px;padding:0.75rem 1.25rem;
+  display:none;align-items:center;gap:10px;padding:0.875rem 1.25rem;
   background:var(--pink-soft);border:1px solid var(--pink-border);
   border-radius:10px;margin-bottom:1.25rem;
 }
@@ -226,11 +225,11 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 
 /* ===== FORM SECTION ===== */
 .form-section{
-  background:rgba(14,14,18,0.72);
+  background:var(--bg-card);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border:1px solid rgba(255,111,216,0.18);
   border-radius:14px;margin-bottom:1.25rem;overflow:hidden;
-  box-shadow:0 8px 32px rgba(0,0,0,0.25);
+  box-shadow:0 8px 32px rgba(0,0,0,0.22);
   transition:border-color 0.2s;
 }
 .form-section:hover{border-color:rgba(255,111,216,0.32);}
@@ -240,39 +239,42 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
   transition:background 0.2s;
 }
 .form-section.collapsed .form-section-header{border-bottom:none;}
-.form-section-header:hover{background:rgba(255,111,216,0.05);}
+.form-section-header:hover{background:rgba(255,111,216,0.04);}
 .form-section-icon{
   width:30px;height:30px;border-radius:8px;
   background:var(--pink-soft);border:1px solid var(--pink-border);
   display:flex;align-items:center;justify-content:center;font-size:14px;
 }
-.form-section-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;flex:1;}
+.form-section-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;flex:1;color:var(--text);}
 .form-section-count{
   font-size:11px;color:#fff;
-  background:linear-gradient(135deg,rgba(255,111,216,0.5),rgba(59,236,255,0.5));
-  padding:3px 10px;border-radius:20px;border:none;font-weight:500;
+  background:linear-gradient(135deg,rgba(255,111,216,0.55),rgba(59,236,255,0.55));
+  padding:3px 10px;border-radius:20px;font-weight:600;letter-spacing:0.3px;
 }
-.form-chevron{color:var(--text-muted);font-size:11px;transition:transform 0.2s;}
+.form-chevron{color:var(--text-muted);font-size:11px;transition:transform 0.25s;}
 .form-section.collapsed .form-chevron{transform:rotate(-90deg);}
 .form-body{display:block;}
 .form-section.collapsed .form-body{display:none;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.04);}
 .form-cell{background:transparent;padding:0.875rem 1.25rem;transition:background 0.2s;}
 .form-cell:hover{background:rgba(255,111,216,0.04);}
-.field-label{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--pink);margin-bottom:6px;font-weight:700;text-shadow:0 0 10px rgba(255,111,216,0.5);}
+.field-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--pink);margin-bottom:6px;font-weight:700;text-shadow:0 0 12px rgba(255,111,216,0.4);}
+
+/* Input styles — light inside dark cards */
 .field-input{
-  width:100%;background:#FFFFFF;border:1.5px solid rgba(255,111,216,0.2);
-  border-radius:7px;padding:7px 10px;color:#1a1a1a;
+  width:100%;background:var(--bg-input-solid);border:1.5px solid rgba(255,111,216,0.18);
+  border-radius:7px;padding:7px 11px;color:#1a1a1a;
   font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;
   appearance:none;-webkit-appearance:none;
 }
-.field-input:focus{border-color:var(--pink);}
+.field-input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,111,216,0.1);}
+.field-input::placeholder{color:#bbb;}
 .field-input option{background:#fff;color:#1a1a1a;}
 
 /* ===== ACTION BAR ===== */
 .action-bar{display:flex;gap:10px;justify-content:flex-end;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border-subtle);}
 .btn-outline{
-  padding:10px 22px;border-radius:9px;border:1px solid var(--border);
+  padding:10px 22px;border-radius:9px;border:1px solid rgba(255,255,255,0.12);
   background:none;color:var(--text-sec);font-family:'DM Sans',sans-serif;
   font-size:13px;cursor:pointer;transition:all 0.2s;
 }
@@ -282,14 +284,15 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
   background:linear-gradient(135deg,var(--pink),var(--cyan));
   color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;
   font-weight:600;cursor:pointer;transition:all 0.2s;
+  box-shadow:0 2px 14px rgba(255,111,216,0.35);
 }
-.btn-primary:hover{opacity:0.85;transform:translateY(-1px);}
+.btn-primary:hover{opacity:0.88;transform:translateY(-1px);box-shadow:0 4px 20px rgba(255,111,216,0.5);}
 
 /* ===== PROMPT CARDS ===== */
 .prompt-cards{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
 @media(max-width:700px){.prompt-cards{grid-template-columns:1fr;}}
 .prompt-card{
-  background:rgba(14,14,18,0.72);
+  background:var(--bg-card);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border:1px solid rgba(255,111,216,0.18);
   border-radius:14px;overflow:hidden;display:flex;flex-direction:column;
@@ -298,11 +301,11 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 }
 .prompt-card:hover{border-color:rgba(255,111,216,0.35);}
 .prompt-card-header{padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.06);}
-.prompt-card-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;display:flex;align-items:center;gap:8px;}
-.badge{font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:20px;font-weight:500;}
+.prompt-card-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;display:flex;align-items:center;gap:8px;color:var(--text);}
+.badge{font-size:10px;letter-spacing:0.8px;text-transform:uppercase;padding:3px 10px;border-radius:20px;font-weight:600;}
 .badge-full{background:var(--pink-soft);color:var(--pink);border:1px solid var(--pink-border);}
-.badge-short{background:rgba(59,236,255,0.1);color:var(--cyan);border:1px solid rgba(59,236,255,0.2);}
-.badge-custom{background:rgba(255,228,94,0.1);color:var(--yellow);border:1px solid rgba(255,228,94,0.2);}
+.badge-short{background:rgba(59,236,255,0.1);color:var(--cyan);border:1px solid rgba(59,236,255,0.22);}
+.badge-custom{background:rgba(255,228,94,0.1);color:var(--yellow);border:1px solid rgba(255,228,94,0.25);}
 .ptype-btns{display:flex;gap:6px;padding:0.75rem 1.25rem;border-bottom:1px solid var(--border-subtle);}
 .ptype-btn{
   flex:1;padding:7px;border-radius:8px;border:1px solid var(--border-subtle);
@@ -317,18 +320,18 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
   white-space:pre-wrap;max-height:200px;overflow-y:auto;
   scrollbar-width:thin;scrollbar-color:var(--border) transparent;
 }
-.copy-footer{display:flex;gap:8px;padding:0.75rem 1.25rem;border-top:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.2);}
+.copy-footer{display:flex;gap:8px;padding:0.75rem 1.25rem;border-top:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.15);}
 .copy-btn{
   flex:1;padding:8px;border-radius:8px;border:1px solid var(--border-subtle);
-  background:var(--bg-card);color:var(--text-sec);font-family:'DM Sans',sans-serif;
+  background:rgba(255,255,255,0.03);color:var(--text-sec);font-family:'DM Sans',sans-serif;
   font-size:12px;cursor:pointer;transition:all 0.2s;font-weight:500;
 }
-.copy-btn:hover{border-color:var(--pink-border);color:var(--pink);}
-.copy-btn.copied{border-color:var(--success);color:var(--success);}
+.copy-btn:hover{border-color:var(--pink-border);color:var(--pink);background:var(--pink-soft);}
+.copy-btn.copied{border-color:var(--success);color:var(--success);background:rgba(74,232,154,0.08);}
 
 /* ===== SCENE SECTION ===== */
 .scene-card{
-  background:rgba(14,14,18,0.72);
+  background:var(--bg-card);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border:1px solid rgba(255,111,216,0.18);
   border-radius:14px;overflow:hidden;margin-bottom:1.25rem;
@@ -336,22 +339,21 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 }
 .scene-header{padding:1rem 1.25rem;border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;gap:10px;}
 .scene-body{padding:1.25rem;}
-.scene-row{display:flex;gap:10px;margin-bottom:1rem;align-items:flex-start;}
 .scene-model-sel{
-  background:#FFFFFF;border:1.5px solid rgba(255,111,216,0.2);border-radius:8px;
+  background:var(--bg-input-solid);border:1.5px solid rgba(255,111,216,0.2);border-radius:8px;
   padding:8px 12px;color:#1a1a1a;font-family:'DM Sans',sans-serif;font-size:13px;
-  outline:none;min-width:160px;transition:border-color 0.2s;appearance:none;
+  outline:none;min-width:160px;transition:border-color 0.2s;appearance:none;cursor:pointer;
 }
 .scene-model-sel:focus{border-color:var(--pink);}
 .scene-context-input{
-  flex:1;background:#FFFFFF;border:1.5px solid rgba(255,111,216,0.2);border-radius:8px;
+  flex:1;background:var(--bg-input-solid);border:1.5px solid rgba(255,111,216,0.2);border-radius:8px;
   padding:8px 12px;color:#1a1a1a;font-family:'DM Sans',sans-serif;font-size:13px;
   outline:none;resize:vertical;min-height:60px;transition:border-color 0.2s;
 }
 .scene-context-input:focus{border-color:var(--pink);}
 .scene-context-input::placeholder{color:#aaa;font-style:italic;}
 .scene-result{
-  background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:10px;
+  background:rgba(0,0,0,0.25);border:1px solid var(--border-subtle);border-radius:10px;
   padding:1rem;min-height:80px;position:relative;
 }
 .scene-result-text{font-size:12.5px;color:var(--text-sec);line-height:1.7;white-space:pre-wrap;}
@@ -360,7 +362,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 /* ===== MODELS GRID ===== */
 .models-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:1rem;}
 .model-card{
-  background:rgba(14,14,18,0.72);
+  background:var(--bg-card);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border:1px solid rgba(255,111,216,0.15);
   border-radius:14px;padding:1.25rem;cursor:pointer;
@@ -372,18 +374,17 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
   background:linear-gradient(135deg,rgba(255,111,216,0.06),rgba(59,236,255,0.06));
   opacity:0;transition:opacity 0.2s;
 }
-.model-card:hover{border-color:rgba(255,111,216,0.4);transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,111,216,0.15);}
+.model-card:hover{border-color:rgba(255,111,216,0.4);transform:translateY(-3px);box-shadow:0 14px 36px rgba(255,111,216,0.18);}
 .model-card:hover::before{opacity:1;}
 .model-avatar{
   width:52px;height:52px;border-radius:50%;
-  background:linear-gradient(135deg,var(--pink),var(--cyan));
   display:flex;align-items:center;justify-content:center;
   font-family:'Cormorant Garamond',serif;font-size:22px;color:#fff;
   margin-bottom:12px;font-weight:600;
 }
-.model-card-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;margin-bottom:4px;}
+.model-card-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;margin-bottom:4px;color:var(--text);}
 .model-card-desc{font-size:12px;color:var(--text-muted);line-height:1.5;}
-.model-card-date{font-size:11px;color:var(--text-muted);margin-top:8px;}
+.model-card-date{font-size:11px;color:var(--text-muted);margin-top:8px;opacity:0.7;}
 .model-card-del{
   position:absolute;top:10px;right:10px;width:24px;height:24px;
   border-radius:6px;border:1px solid var(--border-subtle);background:none;
@@ -391,31 +392,30 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
   display:flex;align-items:center;justify-content:center;transition:all 0.2s;opacity:0;
 }
 .model-card:hover .model-card-del{opacity:1;}
-.model-card-del:hover{border-color:rgba(255,80,80,0.4);color:#FF5050;background:rgba(255,80,80,0.08);}
+.model-card-del:hover{border-color:rgba(255,80,80,0.45);color:#FF5050;background:rgba(255,80,80,0.1);}
 .empty-state{text-align:center;padding:4rem 2rem;color:var(--text-muted);grid-column:1/-1;}
 .empty-icon{font-size:40px;margin-bottom:1rem;opacity:0.25;}
 .empty-text{font-size:14px;line-height:1.7;}
 
 /* ===== STYLES LIBRARY ===== */
-.styles-toolbar{display:flex;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap;}
 .styles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;}
 .style-card{
-  background:rgba(14,14,18,0.72);
+  background:var(--bg-card);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border:1px solid rgba(255,111,216,0.15);
   border-radius:14px;overflow:hidden;cursor:pointer;
   transition:all 0.25s;position:relative;
   box-shadow:0 8px 24px rgba(0,0,0,0.2);
 }
-.style-card:hover{border-color:rgba(255,111,216,0.4);transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,111,216,0.15);}
+.style-card:hover{border-color:rgba(255,111,216,0.4);transform:translateY(-3px);box-shadow:0 14px 36px rgba(255,111,216,0.18);}
 .style-card-img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;}
 .style-card-img-placeholder{
-  width:100%;aspect-ratio:3/4;background:var(--bg-input);
+  width:100%;aspect-ratio:3/4;background:rgba(255,255,255,0.04);
   display:flex;align-items:center;justify-content:center;
   flex-direction:column;gap:8px;color:var(--text-muted);font-size:12px;
 }
 .style-card-body{padding:0.875rem;}
-.style-card-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:500;margin-bottom:4px;}
+.style-card-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:500;margin-bottom:4px;color:var(--text);}
 .style-card-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;}
 .style-tag{font-size:10px;padding:2px 8px;border-radius:20px;background:var(--pink-soft);color:var(--pink);border:1px solid var(--pink-border);}
 .style-card-del{
@@ -435,16 +435,17 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 
 /* ===== MODAL ===== */
 .modal-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;
-  display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);
+  position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:500;
+  display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);
 }
 .modal-overlay.open{display:flex;}
 .modal{
   background:#111116;border:1px solid var(--border);border-radius:18px;
   width:90%;max-width:560px;max-height:85vh;overflow-y:auto;
   padding:1.75rem;position:relative;
+  box-shadow:0 24px 60px rgba(0,0,0,0.6);
 }
-.modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;margin-bottom:1.25rem;display:flex;align-items:center;gap:8px;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;margin-bottom:1.25rem;display:flex;align-items:center;gap:8px;color:var(--text);}
 .modal-title span{background:linear-gradient(135deg,var(--pink),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .modal-close{
   position:absolute;top:1rem;right:1rem;width:30px;height:30px;border-radius:8px;
@@ -453,13 +454,13 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 }
 .modal-close:hover{border-color:var(--pink-border);color:var(--pink);}
 .form-group{margin-bottom:1rem;}
-.form-group label{display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--pink-dim);margin-bottom:6px;font-weight:500;}
+.form-group label{display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--pink-dim);margin-bottom:6px;font-weight:600;}
 .form-group input,.form-group textarea,.form-group select{
   width:100%;background:#FFFFFF;border:1.5px solid rgba(255,111,216,0.2);
   border-radius:8px;padding:9px 12px;color:#1a1a1a;font-family:'DM Sans',sans-serif;
   font-size:13px;outline:none;transition:border-color 0.2s;
 }
-.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--pink);}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,111,216,0.1);}
 .form-group textarea{resize:vertical;min-height:90px;line-height:1.6;}
 .upload-area{
   border:1.5px dashed var(--border);border-radius:10px;padding:1.5rem;
@@ -469,7 +470,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 .upload-area input{display:none;}
 .upload-preview{width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-top:10px;display:none;}
 
-/* ===== SETTINGS MODAL ===== */
+/* ===== SETTINGS ===== */
 .settings-row{display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
 .settings-row input{flex:1;}
 .api-key-input{font-family:monospace;font-size:12px;letter-spacing:0.5px;}
@@ -480,15 +481,21 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
   position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;
   background:#111116;border:1px solid var(--pink-border);border-radius:10px;
   padding:12px 20px;font-size:13px;color:var(--text);
-  transform:translateY(80px);opacity:0;transition:all 0.3s;pointer-events:none;
+  transform:translateY(80px);opacity:0;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;
+  box-shadow:0 8px 24px rgba(255,111,216,0.2);
 }
 .toast.show{transform:translateY(0);opacity:1;}
+
+/* ===== TAB TRANSITION ===== */
+.tab-content{animation:tabIn 0.2s ease;}
+@keyframes tabIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
 /* ===== RESPONSIVE ===== */
 @media(max-width:600px){
   .header-nav{display:none;}
   .form-grid{grid-template-columns:1fr;}
   .mode-btns{flex-wrap:wrap;}
+  .prompt-cards{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -506,61 +513,63 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-  <div class="sidebar-label">Ferramentas</div>
-  <div class="tool-grid" id="tool-grid">
+  <div class="sidebar-label">Ferramentas AI</div>
+  <div class="tool-grid">
     <a href="https://app.leonardo.ai" target="_blank" class="tool-btn">
       <div class="tool-icon" style="background:#1a1a2e;">
-        <img src="images/leonardo.png" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='L';">
+        <img src="images/leonardo.png" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display='none';this.parentElement.textContent='L';">
       </div>
       Leonardo AI
     </a>
     <a href="https://www.midjourney.com" target="_blank" class="tool-btn">
       <div class="tool-icon" style="background:#0f0f0f;">
-        <img src="images/midjourney.png" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='M';">
+        <img src="images/midjourney.png" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display='none';this.parentElement.textContent='M';">
       </div>
       Midjourney
     </a>
     <a href="https://labs.google/fx/pt/tools/flow" target="_blank" class="tool-btn">
-      <div class="tool-icon" style="background:#1a3a2e;color:#4AE89A;font-size:18px;font-weight:700;">F</div>
+      <div class="tool-icon" style="background:#1a3a2e;color:#4AE89A;font-size:18px;font-weight:700;font-family:'Lilita One',cursive;">F</div>
       Flow
     </a>
     <a href="https://grok.com" target="_blank" class="tool-btn">
       <div class="tool-icon" style="background:#1a1a1a;">
-        <img src="images/grok.png" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='G';">
+        <img src="images/grok.png" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display='none';this.parentElement.textContent='G';">
       </div>
       Grok
     </a>
     <a href="https://claude.ai" target="_blank" class="tool-btn">
       <div class="tool-icon" style="background:#1a0e00;">
-        <img src="images/claude.png" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='C';">
+        <img src="images/claude.png" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display='none';this.parentElement.textContent='C';">
       </div>
       Claude
     </a>
     <a href="https://chatgpt.com" target="_blank" class="tool-btn">
       <div class="tool-icon" style="background:#0d1f1a;">
-        <img src="images/gpt.png" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='G';">
+        <img src="images/gpt.png" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display='none';this.parentElement.textContent='G';">
       </div>
       ChatGPT
     </a>
     <a href="https://davinci.ai/app" target="_blank" class="tool-btn">
       <div class="tool-icon" style="background:#1a1030;">
-        <img src="images/davinci.png" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='D';">
+        <img src="images/davinci.png" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display='none';this.parentElement.textContent='D';">
       </div>
       DaVinci
     </a>
   </div>
   <div class="sidebar-divider"></div>
-  <div class="sidebar-version">ModelStudio v1.0</div>
+  <div class="sidebar-version">Candy ModelStudio v1.1</div>
 </div>
 
 <!-- HEADER -->
 <header class="header">
   <div class="header-left">
-    <button class="hamburger" onclick="toggleSidebar()">
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()">
       <span></span><span></span><span></span>
     </button>
-    <img src="images/logo.png" class="logo-img" id="logo-img" onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='block';" alt="ModelStudio" style="height:40px;object-fit:contain;display:block;">
-    <div class="logo-fallback" id="logo-fallback" style="display:none;font-family:'Lilita One',cursive;font-size:22px;background:linear-gradient(135deg,var(--pink),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">ModelStudio</div>
+    <img src="images/logo.png" class="logo-img" id="logo-img"
+      onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='block';"
+      alt="Candy ModelStudio">
+    <div class="logo-fallback" id="logo-fallback" style="display:none;">Candy.</div>
   </div>
   <nav class="header-nav">
     <button class="nav-tab active" onclick="setTab('create')">Criar Modelo</button>
@@ -577,7 +586,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 <main class="main">
 
   <!-- ===== TAB: CRIAR MODELO ===== -->
-  <div id="tab-create">
+  <div id="tab-create" class="tab-content">
     <div class="section-header">
       <div class="section-title">Nova <span>Modelo</span></div>
     </div>
@@ -639,18 +648,18 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
   </div>
 
   <!-- ===== TAB: PROMPTS ===== -->
-  <div id="tab-prompts" style="display:none;">
+  <div id="tab-prompts" style="display:none;" class="tab-content">
     <div class="section-header">
       <div class="section-title">Seus <span>Prompts</span></div>
     </div>
     <div class="accent-line"></div>
 
-    <!-- SCENE / CONTEÚDO -->
+    <!-- PROMPT DE CONTEÚDO -->
     <div class="scene-card">
       <div class="scene-header">
         <div class="form-section-icon">🎬</div>
         <div style="flex:1;">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;">Prompt de Conteúdo</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--text);">Prompt de Conteúdo</div>
           <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Gerador de Scene Input com IA</div>
         </div>
         <span class="badge badge-custom">Scene Input</span>
@@ -681,14 +690,14 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
     </div>
 
     <!-- PROMPT DE IDENTIDADE -->
-    <div class="scene-card" style="border-color:rgba(255,228,94,0.25);">
-      <div class="scene-header" style="border-bottom:1px solid rgba(255,228,94,0.15);">
+    <div class="scene-card" style="border-color:rgba(255,228,94,0.22);">
+      <div class="scene-header" style="border-bottom:1px solid rgba(255,228,94,0.12);">
         <div class="form-section-icon" style="background:rgba(255,228,94,0.1);border-color:rgba(255,228,94,0.3);">✨</div>
         <div style="flex:1;">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;">Prompt de Identidade</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--text);">Prompt de Identidade</div>
           <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Prompt narrativo completo — pronto para o Flow</div>
         </div>
-        <span class="badge" style="background:rgba(255,228,94,0.1);color:var(--yellow);border:1px solid rgba(255,228,94,0.25);">Sem API Key</span>
+        <span class="badge" style="background:rgba(255,228,94,0.1);color:var(--yellow);border:1px solid rgba(255,228,94,0.22);">Sem API Key</span>
       </div>
       <div class="scene-body">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap;">
@@ -698,7 +707,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
           </select>
           <button class="gen-btn" onclick="updateIdentityPrompt()" style="padding:8px 18px;">↻ Gerar</button>
         </div>
-        <div class="scene-result" style="border-color:rgba(255,228,94,0.15);min-height:120px;">
+        <div class="scene-result" style="border-color:rgba(255,228,94,0.12);min-height:120px;">
           <div class="scene-result-text" id="identityResult" style="color:var(--text-sec);">Selecione uma modelo salva para gerar o prompt de identidade...</div>
         </div>
         <div class="scene-actions" style="margin-top:10px;">
@@ -707,9 +716,9 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
       </div>
     </div>
 
-    <!-- ROSTO + CORPO -->
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;">
-      <div class="field-label">Modelo para prompts personalizados:</div>
+    <!-- PROMPTS DE ROSTO + CORPO -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap;">
+      <div class="field-label" style="margin-bottom:0;">Modelo para prompts personalizados:</div>
       <select class="scene-model-sel" id="promptModelSel" onchange="updatePrompts()">
         <option value="">— Nenhuma —</option>
       </select>
@@ -756,7 +765,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
   </div>
 
   <!-- ===== TAB: ESTILOS ===== -->
-  <div id="tab-styles" style="display:none;">
+  <div id="tab-styles" style="display:none;" class="tab-content">
     <div class="section-header">
       <div class="section-title">Biblioteca de <span>Estilos</span></div>
       <button class="btn-primary" onclick="openAddStyle()">+ Adicionar Estilo</button>
@@ -771,9 +780,9 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
   </div>
 
   <!-- ===== TAB: MODELOS ===== -->
-  <div id="tab-models" style="display:none;">
+  <div id="tab-models" style="display:none;" class="tab-content">
     <div class="section-header">
-      <div class="section-title">Modelos <span>Salvos</span></div>
+      <div class="section-title">Modelos <span>Salvas</span></div>
       <button class="btn-primary" onclick="setTab('create')">+ Nova Modelo</button>
     </div>
     <div class="accent-line"></div>
@@ -829,7 +838,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
     </div>
     <div class="form-group">
       <label>Scene Input (em inglês)</label>
-      <textarea id="styleSceneInput" placeholder="Ex: Cozy bedroom, natural morning light, mirror selfie, casual oversized grey sweater and black shorts, spontaneous and relaxed mood..."></textarea>
+      <textarea id="styleSceneInput" placeholder="Ex: Cozy bedroom, natural morning light, mirror selfie, casual oversized grey sweater..."></textarea>
     </div>
     <div class="action-bar" style="margin-top:0;padding-top:1rem;">
       <button class="btn-outline" onclick="closeModal('modal-style')">Cancelar</button>
@@ -846,11 +855,11 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
     <img id="styleViewImg" style="width:100%;max-height:300px;object-fit:cover;border-radius:10px;margin-bottom:1rem;display:none;">
     <div class="form-group">
       <label>Scene Input</label>
-      <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:8px;padding:1rem;font-size:13px;color:var(--text-sec);line-height:1.7;white-space:pre-wrap;" id="styleViewScene"></div>
+      <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border-subtle);border-radius:8px;padding:1rem;font-size:13px;color:var(--text-sec);line-height:1.7;white-space:pre-wrap;" id="styleViewScene"></div>
     </div>
     <div class="form-group">
       <label>Prompt Completo de Conteúdo</label>
-      <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:8px;padding:1rem;font-size:12px;color:var(--text-sec);line-height:1.7;white-space:pre-wrap;max-height:200px;overflow-y:auto;" id="styleViewFull"></div>
+      <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border-subtle);border-radius:8px;padding:1rem;font-size:12px;color:var(--text-sec);line-height:1.7;white-space:pre-wrap;max-height:200px;overflow-y:auto;" id="styleViewFull"></div>
     </div>
     <div class="action-bar" style="margin-top:0;padding-top:1rem;">
       <button class="btn-outline" onclick="closeModal('modal-style-view')">Fechar</button>
@@ -860,7 +869,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 </div>
 
 <script>
-// ===== DATA =====
+// ===== FIELD DEFINITIONS =====
 const ROSTO_FIELDS=[
   {key:'idade',label:'Idade Aparente',opts:['18-20 anos','21-25 anos','26-30 anos','31-35 anos','36-40 anos']},
   {key:'etnia',label:'Etnia',opts:['Brasileira','Latina','Europeia','Asiática','Afro-brasileira','Mista','Árabe']},
@@ -879,6 +888,7 @@ const ROSTO_FIELDS=[
   {key:'cabelo_tex',label:'Cabelo — Textura',opts:['Liso','Ondulado','Cacheado','Crespo','Relaxado']},
   {key:'linha_cabelo',label:'Linha do Cabelo',opts:['Normal','Levemente alta','Alta','Baixa','Em M','Viúva']},
 ];
+
 const CORPO_FIELDS=[
   {key:'altura',label:'Altura',opts:['1,50m-1,55m','1,56m-1,60m','1,61m-1,65m','1,66m-1,70m','1,71m-1,75m','1,76m+']},
   {key:'biotipo',label:'Biotipo',opts:['Magra','Atlética','Curvilínea','Média','Robusta','Petite']},
@@ -891,6 +901,7 @@ const CORPO_FIELDS=[
   {key:'postura',label:'Postura Natural',opts:['Ereta','Levemente curvada','Relaxada','Confiante','Delicada']},
 ];
 
+// ===== PROMPTS =====
 const PROMPT_CORPO_FULL=`Ultra-realistic full body character model sheet of the SAME female influencer from the reference image.
 
 Create a single image containing three aligned full-body views side by side:
@@ -1059,6 +1070,8 @@ let savedModels=JSON.parse(localStorage.getItem('ms_models')||'[]');
 let savedStyles=JSON.parse(localStorage.getItem('ms_styles')||'[]');
 let apiKey=localStorage.getItem('ms_apikey')||'';
 let currentStyleScene='';
+let currentIdentityPrompt='';
+let currentSceneResult='';
 
 // ===== INIT =====
 function init(){
@@ -1068,10 +1081,8 @@ function init(){
   renderModels();
   renderStyles();
   if(apiKey) document.getElementById('apiKeyInput').value=apiKey;
-  // Garante seções abertas
   document.getElementById('sec-rosto').classList.remove('collapsed');
   document.getElementById('sec-corpo').classList.remove('collapsed');
-  // Atualiza prompts só se elementos existem
   try{ updatePrompts(); }catch(e){}
 }
 
@@ -1082,10 +1093,18 @@ function buildFields(fields,gridId){
   fields.forEach(f=>{
     const c=document.createElement('div');
     c.className='form-cell';
-    c.innerHTML=`<div class="field-label">${f.label}</div>`
-      +(currentMode==='manual'
-        ?`<input class="field-input" id="field_${f.key}" placeholder="Digite...">`
-        :`<select class="field-input" id="field_${f.key}"><option value="">Selecionar...</option>${f.opts.map(o=>`<option>${o}</option>`).join('')}</select>`);
+    const isAuto=currentMode==='auto';
+    const isSuggestive=currentMode==='suggestive';
+    let inputHtml;
+    if(isSuggestive||isAuto){
+      inputHtml=`<select class="field-input" id="field_${f.key}">
+        <option value="">Selecionar...</option>
+        ${f.opts.map(o=>`<option value="${o}">${o}</option>`).join('')}
+      </select>`;
+    } else {
+      inputHtml=`<input class="field-input" id="field_${f.key}" placeholder="Digite...">`;
+    }
+    c.innerHTML=`<div class="field-label">${f.label}</div>${inputHtml}`;
     g.appendChild(c);
   });
 }
@@ -1100,39 +1119,44 @@ function setMode(m){
 }
 
 // ===== SECTION TOGGLE =====
-function toggleSection(s){document.getElementById('sec-'+s).classList.toggle('collapsed');}
-
-// ===== TAB =====
-function setTab(t){
-  ['create','prompts','styles','models'].forEach(x=>{
-    document.getElementById('tab-'+x).style.display=x===t?'block':'none';
-  });
-  document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',['create','prompts','styles','models'][i]===t));
-  if(t==='prompts'){updateSelects();updatePrompts();updateIdentityPrompt();}
-  if(t==='models')renderModels();
-  if(t==='styles')renderStyles();
+function toggleSection(id){
+  document.getElementById('sec-'+id).classList.toggle('collapsed');
 }
 
 // ===== SIDEBAR =====
 function toggleSidebar(){
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('overlay').classList.toggle('open');
+  const s=document.getElementById('sidebar');
+  const o=document.getElementById('overlay');
+  const h=document.getElementById('hamburgerBtn');
+  s.classList.toggle('open');
+  o.classList.toggle('open');
+  h.classList.toggle('open');
 }
 function closeSidebar(){
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('overlay').classList.remove('open');
+  document.getElementById('hamburgerBtn').classList.remove('open');
 }
 
-// ===== MODALS =====
-function openSettings(){document.getElementById('modal-settings').classList.add('open');}
-function openAddStyle(){document.getElementById('modal-style').classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+// ===== TAB =====
+function setTab(t){
+  ['create','prompts','styles','models'].forEach(id=>{
+    const el=document.getElementById('tab-'+id);
+    el.style.display=id===t?'block':'none';
+    if(id===t) el.classList.remove('tab-content'), void el.offsetWidth, el.classList.add('tab-content');
+  });
+  document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',['create','prompts','styles','models'][i]===t));
+  if(t==='prompts') updatePrompts();
+  if(t==='models') renderModels();
+  if(t==='styles') renderStyles();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 
-// ===== SETTINGS =====
-function toggleApiKey(){
-  const i=document.getElementById('apiKeyInput');
-  i.type=i.type==='password'?'text':'password';
+// ===== MODAL =====
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function openSettings(){
+  document.getElementById('apiKeyInput').value=apiKey;
+  document.getElementById('modal-settings').classList.add('open');
 }
 function saveSettings(){
   apiKey=document.getElementById('apiKeyInput').value.trim();
@@ -1140,82 +1164,109 @@ function saveSettings(){
   closeModal('modal-settings');
   showToast('✓ Configurações salvas!');
 }
-
-// ===== API CALL =====
-async function callClaude(prompt,maxTokens=1200){
-  if(!apiKey){
-    showToast('⚠ Configure sua API key nas configurações!');
-    throw new Error('No API key');
-  }
-  const r=await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:maxTokens,messages:[{role:'user',content:prompt}]})
-  });
-  const d=await r.json();
-  if(d.error)throw new Error(d.error.message);
-  return d.content[0].text;
+function toggleApiKey(){
+  const i=document.getElementById('apiKeyInput');
+  i.type=i.type==='password'?'text':'password';
+}
+function openAddStyle(){
+  clearStyleForm();
+  document.getElementById('modal-style').classList.add('open');
 }
 
-// ===== GENERATE AUTO =====
+// ===== AUTO GENERATE =====
 async function generateAuto(){
-  const direction=document.getElementById('directionInput').value.trim();
-  const btn=document.getElementById('genBtn');
-  btn.disabled=true;
+  if(!apiKey){showToast('⚠ Configure sua API Key primeiro!');openSettings();return;}
+  const dir=document.getElementById('directionInput').value.trim()||'modelo feminina brasileira';
   document.getElementById('loadingBar').classList.add('show');
-  const prompt=`Você é um especialista em criar perfis de modelos para geração de imagens de IA.
-Crie um perfil completo e coerente de uma modelo.
-${direction?`Direção: ${direction}`:'Gere uma modelo completamente aleatória e única.'}
-Responda APENAS com JSON válido, sem markdown:
-{"nome":"nome feminino elegante","idade":"valor","etnia":"valor","formato_rosto":"valor","tom_pele":"valor","tipo_pele":"valor","formato_olhos":"valor","cor_olhos":"valor","tamanho_olhos":"valor","sobrancelha":"valor","nariz":"valor","labios":"valor","dentes":"valor","cabelo_cor":"valor","cabelo_comp":"valor","cabelo_tex":"valor","linha_cabelo":"valor","altura":"valor","biotipo":"valor","proporcao":"valor","cintura":"valor","quadril":"valor","pernas":"valor","bracos":"valor","ombros":"valor","postura":"valor"}`;
+  document.getElementById('genBtn').disabled=true;
+
+  const fieldList=[...ROSTO_FIELDS,...CORPO_FIELDS].map(f=>`${f.label}: ${f.opts.join(', ')}`).join('\n');
+
   try{
-    const txt=await callClaude(prompt);
-    const clean=txt.replace(/```json|```/g,'').trim();
-    const p=JSON.parse(clean);
-    if(p.nome)document.getElementById('modelName').value=p.nome;
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:`Você é um assistente que gera fichas de modelos para IA. Responda APENAS com JSON válido, sem markdown, sem explicações. Use exatamente as chaves fornecidas.`,
+        messages:[{role:'user',content:`Crie uma modelo com base na direção: "${dir}"\n\nRetorne um JSON com exatamente estas chaves e escolha opções coerentes com a direção:\n${[...ROSTO_FIELDS,...CORPO_FIELDS].map(f=>`"${f.key}": uma de [${f.opts.map(o=>`"${o}"`).join(',')}]`).join(',\n')}`}]
+      })
+    });
+    const data=await res.json();
+    const text=data.content?.[0]?.text||'{}';
+    let parsed;
+    try{parsed=JSON.parse(text.replace(/```json|```/g,'').trim());}
+    catch(e){parsed={};}
+
+    // Rebuild fields in suggestive mode to use selects
+    currentMode='suggestive';
+    buildFields(ROSTO_FIELDS,'grid-rosto');
+    buildFields(CORPO_FIELDS,'grid-corpo');
+    document.querySelectorAll('.mode-btn').forEach((b,i)=>b.classList.toggle('active',i===1));
+
     [...ROSTO_FIELDS,...CORPO_FIELDS].forEach(f=>{
       const el=document.getElementById('field_'+f.key);
-      if(el&&p[f.key])el.value=p[f.key];
+      if(el&&parsed[f.key]){
+        // Try exact match first, then partial
+        const opts=[...el.options];
+        const match=opts.find(o=>o.value===parsed[f.key])||opts.find(o=>o.value.toLowerCase().includes(parsed[f.key].toLowerCase()));
+        if(match) el.value=match.value;
+        else { el.value=''; el.options[0].text=parsed[f.key]; el.value=el.options[0].value; }
+      }
     });
-    showToast('✓ Modelo gerada com sucesso!');
-  }catch(e){if(e.message!=='No API key')showToast('Erro ao gerar. Verifique sua API key.');}
-  btn.disabled=false;
-  document.getElementById('loadingBar').classList.remove('show');
+    showToast('⚡ Modelo gerada com sucesso!');
+  }catch(err){
+    showToast('⚠ Erro ao gerar. Verifique sua API key.');
+  }finally{
+    document.getElementById('loadingBar').classList.remove('show');
+    document.getElementById('genBtn').disabled=false;
+  }
 }
 
-// ===== GENERATE SCENE =====
+// ===== SCENE GENERATE =====
 async function generateScene(){
+  if(!apiKey){showToast('⚠ Configure sua API Key primeiro!');openSettings();return;}
   const ctx=document.getElementById('sceneContext').value.trim();
-  if(!ctx){showToast('⚠ Descreva o contexto antes de gerar!');return;}
+  if(!ctx){showToast('⚠ Descreva o contexto da cena!');return;}
+
   const modelId=document.getElementById('sceneModelSel').value;
   const model=savedModels.find(m=>m.id==modelId);
-  let modelDesc='';
-  if(model){
-    const d=model.data;
-    modelDesc=`Modelo: ${model.name}. `+[d.etnia,d.idade,d.biotipo,d.cabelo_cor,d.cabelo_comp,d.tom_pele].filter(Boolean).join(', ')+'.';
-  }
-  const prompt=`Você é especialista em criar prompts para geração de imagens de influencers em IA.
-Crie um Scene Input em inglês, detalhado e visual, baseado neste contexto:
-"${ctx}"
-${modelDesc?`Características da modelo: ${modelDesc}`:''}
-O Scene Input deve descrever: ambiente, outfit completo, vibe, iluminação, mood e contexto.
-Deve ser fluido, descritivo, em inglês, entre 3-5 linhas. Responda APENAS com o Scene Input, sem introdução ou explicação.`;
-  const resultEl=document.getElementById('sceneResult');
-  resultEl.textContent='Gerando...';
+
+  const btn=document.querySelector('[onclick="generateScene()"]');
+  const orig=btn.textContent;
+  btn.textContent='Gerando...';btn.disabled=true;
+  document.getElementById('sceneResult').textContent='Gerando scene input...';
+
   try{
-    const scene=await callClaude(prompt,400);
-    const fullPrompt=PROMPT_CONTENT_BASE+scene;
-    resultEl.textContent=fullPrompt;
-    currentStyleScene=fullPrompt;
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:600,
+        system:'Você é especialista em criar Scene Inputs para geração de imagens de influencers virtuais. Responda em inglês, de forma descritiva e cinematográfica, em um parágrafo fluido. Sem marcadores, sem títulos.',
+        messages:[{role:'user',content:`Crie um Scene Input descritivo em inglês para o prompt de geração de imagem de uma influencer virtual.
+
+Contexto (pt-BR): ${ctx}
+${model?`\nCaracterísticas da modelo: ${Object.entries(model.data).filter(([,v])=>v).map(([k,v])=>`${k}: ${v}`).join(', ')}`:''}`}]
+      })
+    });
+    const data=await res.json();
+    const scene=data.content?.[0]?.text||'';
+    currentSceneResult=PROMPT_CONTENT_BASE+scene;
+    document.getElementById('sceneResult').textContent=PROMPT_CONTENT_BASE+scene;
     showToast('✓ Scene Input gerado!');
   }catch(e){
-    resultEl.textContent='Erro ao gerar. Verifique sua API key.';
+    showToast('⚠ Erro ao gerar scene input.');
+  }finally{
+    btn.textContent=orig;btn.disabled=false;
   }
 }
 
 function copyScene(){
-  const txt=document.getElementById('sceneResult').textContent;
-  if(!txt||txt==='O prompt de conteúdo aparecerá aqui...')return;
+  const txt=currentSceneResult||document.getElementById('sceneResult').textContent;
+  if(!txt||txt.includes('aparecerá aqui')){showToast('⚠ Gere um scene input primeiro!');return;}
   navigator.clipboard.writeText(txt).then(()=>{
     const btn=document.getElementById('copySceneBtn');
     btn.textContent='✓ Copiado!';btn.classList.add('copied');
@@ -1223,130 +1274,128 @@ function copyScene(){
   });
 }
 
-// ===== PROMPTS =====
-function setPType(card,type){
-  if(card==='corpo')corpoType=type;else rostoType=type;
-  const idx=card==='corpo'?0:1;
-  document.querySelectorAll('.prompt-card')[idx].querySelectorAll('.ptype-btn').forEach((b,i)=>b.classList.toggle('active',['full','short','custom'][i]===type));
-  updatePrompts();
+// ===== IDENTITY PROMPT =====
+function buildIdentityPrompt(m){
+  const d=m.data;
+  const parts=[];
+  if(d.idade) parts.push(`${d.idade.replace(' anos','-year-old')}`);
+  if(d.etnia) parts.push(`${d.etnia.toLowerCase()} woman`);
+  if(d.formato_rosto) parts.push(`${d.formato_rosto.toLowerCase()} face shape`);
+  if(d.tom_pele) parts.push(`${d.tom_pele.toLowerCase()} skin tone`);
+  if(d.tipo_pele) parts.push(`${d.tipo_pele.toLowerCase()} skin`);
+  if(d.formato_olhos) parts.push(`${d.formato_olhos.toLowerCase()} eyes`);
+  if(d.cor_olhos) parts.push(`${d.cor_olhos.toLowerCase()} eye color`);
+  if(d.sobrancelha) parts.push(`${d.sobrancelha.toLowerCase()} eyebrows`);
+  if(d.nariz) parts.push(`${d.nariz.toLowerCase()} nose`);
+  if(d.labios) parts.push(`${d.labios.toLowerCase()} lips`);
+  if(d.dentes) parts.push(`${d.dentes.toLowerCase()} teeth`);
+  if(d.cabelo_cor||d.cabelo_comp||d.cabelo_tex) parts.push(`${[d.cabelo_comp,d.cabelo_tex,d.cabelo_cor].filter(Boolean).join(' ').toLowerCase()} hair`);
+  if(d.altura) parts.push(`${d.altura} tall`);
+  if(d.biotipo) parts.push(`${d.biotipo.toLowerCase()} body type`);
+  if(d.cintura) parts.push(`${d.cintura.toLowerCase()} waist`);
+  if(d.quadril) parts.push(`${d.quadril.toLowerCase()} hips`);
+  if(d.postura) parts.push(`${d.postura.toLowerCase()} posture`);
+
+  return `Ultra-realistic digital portrait of ${m.name}. A ${parts.join(', ')}. Virtual influencer, photorealistic, 8K resolution, natural lighting, authentic appearance. No stylization. This is the complete character reference for consistent identity across all generations.`;
 }
 
 function updateIdentityPrompt(){
   const id=document.getElementById('identityModelSel').value;
-  const model=savedModels.find(m=>m.id==id);
-  const el=document.getElementById('identityResult');
-  if(!model){el.textContent='Selecione uma modelo salva para gerar o prompt de identidade...';return;}
-  el.textContent=buildIdentityPrompt(model);
-}
-
-function buildIdentityPrompt(m){
-  const d=m.data;
-
-  // Tradução dos campos pt → en
-  const ageMap={'18-20 anos':'18-20 year old','21-25 anos':'22-25 year old','26-30 anos':'27-30 year old','31-35 anos':'32-35 year old','36-40 anos':'37-40 year old'};
-  const ethnMap={'Brasileira':'Brazilian','Latina':'Latin','Europeia':'Caucasian European','Asiática':'Asian','Afro-brasileira':'Afro-Brazilian','Mista':'mixed ethnicity','Árabe':'Middle Eastern'};
-  const faceMap={'Oval':'oval','Redondo':'round','Quadrado':'square','Coração':'heart-shaped','Losango':'diamond','Retangular':'rectangular'};
-  const skinToneMap={'Muito clara':'very fair porcelain','Clara':'fair','Média clara':'light medium','Média':'medium olive','Média escura':'medium dark','Escura':'dark','Muito escura':'very dark deep'};
-  const skinTypeMap={'Lisa':'smooth even skin','Com sardas':'natural skin with light freckles','Acne leve':'natural skin with slight texture','Textura natural':'natural skin texture','Poros visíveis':'natural visible pores','Bronzeada':'sun-kissed bronzed skin'};
-  const eyeShapeMap={'Amendoado':'almond-shaped','Redondo':'round','Puxado':'slightly upturned','Profundo':'deep-set','Saliente':'prominent','Caído':'downturned'};
-  const eyeColorMap={'Castanho escuro':'deep brown','Castanho claro':'light brown','Verde':'green','Azul':'blue','Cinza':'grey','Avelã':'hazel','Mel':'honey amber'};
-  const eyeSizeMap={'Pequenos':'small','Médios':'medium','Grandes':'large'};
-  const browMap={'Arqueada fina':'softly arched thin','Arqueada grossa':'strongly arched full','Reta fina':'straight thin','Reta grossa':'straight full','Natural':'natural','Preenchida':'well-defined filled'};
-  const noseMap={'Pequeno':'small delicate','Arrebitado':'small upturned','Reto':'straight refined','Largo':'broad','Fino':'thin narrow','Médio':'medium','Adunco':'aquiline'};
-  const lipsMap={'Finos':'thin','Médios':'medium','Volumosos':'full voluminous','Carnudos':'plump','Assimétricos naturais':'naturally asymmetric','Coração':'heart-shaped'};
-  const teethMap={'Perfeitos':'perfectly straight white','Naturais':'natural straight','Leve espaçamento':'natural with slight gap','Levemente irregulares':'naturally slightly irregular','Sorriso largo':'wide bright smile'};
-  const hairColorMap={'Preto':'jet black','Castanho escuro':'dark brunette','Castanho':'brunette','Castanho claro':'light brown','Loiro escuro':'dark blonde','Loiro':'blonde','Ruivo':'vibrant copper red','Colorido':'colorful dyed'};
-  const hairLenMap={'Curto':'short','Na orelha':'ear-length','No queixo':'chin-length bob','No ombro':'shoulder-length','Médio':'medium','Longo':'long','Muito longo':'waist-length'};
-  const hairTexMap={'Liso':'straight silky','Ondulado':'softly wavy','Cacheado':'curly','Crespo':'coily natural','Relaxado':'relaxed smooth'};
-  const heightMap={'1,50m-1,55m':'152 cm tall','1,56m-1,60m':'158 cm tall','1,61m-1,65m':'163 cm tall','1,66m-1,70m':'168 cm tall','1,71m-1,75m':'173 cm tall','1,76m+':'178 cm tall'};
-  const biotipoMap={'Magra':'slim lean','Atlética':'athletic toned','Curvilínea':'curvy hourglass','Média':'average medium','Robusta':'full-figured','Petite':'petite slim'};
-  const propMap={'Pernas longas':'long legs and proportionate torso','Tronco curto':'long legs and short torso','Equilibrado':'balanced proportions','Pernas médias':'medium legs and balanced torso','Tronco longo':'long torso and medium legs'};
-  const waistMap={'Fina marcada':'defined narrow waist','Média':'medium waist','Larga':'wide waist','Flutuante':'soft undefined waist','Sem definição':'natural undefined waist'};
-  const hipsMap={'Estreito':'narrow hips','Médio':'medium hips','Largo':'wide rounded hips','Muito largo':'very wide full hips','Proporcional':'proportional hips'};
-  const legsMap={'Longas':'long toned legs','Torneadas':'shapely legs','Finas':'slender legs','Musculosas':'muscular defined legs','Médias':'medium legs','Curtas':'short legs'};
-  const armsMap={'Finos':'slender arms','Definidos':'lightly defined arms','Suaves':'soft arms','Musculosos':'muscular arms','Médios':'medium arms'};
-  const shouldersMap={'Estreitos':'narrow shoulders','Médios':'medium shoulders','Largos':'broad shoulders','Caídos':'sloping shoulders','Retos':'straight shoulders'};
-  const postureMap={'Ereta':'upright confident posture','Levemente curvada':'slightly relaxed posture','Relaxada':'relaxed natural posture','Confiante':'confident assertive posture','Delicada':'delicate graceful posture'};
-
-  const age=ageMap[d.idade]||d.idade||'young';
-  const eth=ethnMap[d.etnia]||d.etnia||'';
-  const face=faceMap[d.formato_rosto]||d.formato_rosto||'';
-  const skinT=skinToneMap[d.tom_pele]||d.tom_pele||'';
-  const skinTy=skinTypeMap[d.tipo_pele]||d.tipo_pele||'';
-  const eyeS=eyeShapeMap[d.formato_olhos]||d.formato_olhos||'';
-  const eyeC=eyeColorMap[d.cor_olhos]||d.cor_olhos||'';
-  const eyeSz=eyeSizeMap[d.tamanho_olhos]||d.tamanho_olhos||'';
-  const brow=browMap[d.sobrancelha]||d.sobrancelha||'';
-  const nose=noseMap[d.nariz]||d.nariz||'';
-  const lips=lipsMap[d.labios]||d.labios||'';
-  const teeth=teethMap[d.dentes]||d.dentes||'';
-  const hairC=hairColorMap[d.cabelo_cor]||d.cabelo_cor||'';
-  const hairL=hairLenMap[d.cabelo_comp]||d.cabelo_comp||'';
-  const hairT=hairTexMap[d.cabelo_tex]||d.cabelo_tex||'';
-  const height=heightMap[d.altura]||d.altura||'';
-  const bio=biotipoMap[d.biotipo]||d.biotipo||'';
-  const prop=propMap[d.proporcao]||d.proporcao||'';
-  const waist=waistMap[d.cintura]||d.cintura||'';
-  const hips=hipsMap[d.quadril]||d.quadril||'';
-  const legs=legsMap[d.pernas]||d.pernas||'';
-  const arms=armsMap[d.bracos]||d.bracos||'';
-  const shoulders=shouldersMap[d.ombros]||d.ombros||'';
-  const posture=postureMap[d.postura]||d.postura||'';
-
-  return `Ultra-realistic full body portrait of a ${age} ${eth} woman standing in a solid white studio background.
-She has a ${face} face with ${skinT} skin${skinTy?` and ${skinTy}`:''}. Her eyes are ${eyeS} with ${eyeC} color${eyeSz?`, ${eyeSz} in size`:''}, framed by ${brow} eyebrows. Her nose is ${nose} and her lips are ${lips}. Her teeth are ${teeth}.
-Her hair is ${hairC}, ${hairL}, ${hairT}.
-She is ${height} with a ${bio} body. Her proportions are ${prop}. She has a ${waist}, ${hips}, ${legs}, ${arms}, and ${shoulders}. Her natural posture is ${posture}.
-Professional studio lighting, soft shadow under feet, sharp focus, 85mm lens, high detail skin texture, realistic anatomy, natural proportions, 8K resolution, fashion photography style, photorealistic.`;
+  if(!id){document.getElementById('identityResult').textContent='Selecione uma modelo salva para gerar o prompt de identidade...';return;}
+  const m=savedModels.find(x=>x.id==id);
+  if(!m) return;
+  currentIdentityPrompt=buildIdentityPrompt(m);
+  document.getElementById('identityResult').textContent=currentIdentityPrompt;
 }
 
 function copyIdentity(){
-  const txt=document.getElementById('identityResult').textContent;
-  if(!txt||txt.includes('Selecione'))return;
-  navigator.clipboard.writeText(txt).then(()=>{
+  if(!currentIdentityPrompt){showToast('⚠ Gere o prompt primeiro!');return;}
+  navigator.clipboard.writeText(currentIdentityPrompt).then(()=>{
     const btn=document.getElementById('copyIdentityBtn');
-    const orig=btn.textContent;
-    btn.textContent='✓ Copiado!';
-    btn.style.color='var(--success)';
-    btn.style.borderColor='var(--success)';
-    setTimeout(()=>{btn.textContent=orig;btn.style.color='var(--yellow)';btn.style.borderColor='rgba(255,228,94,0.2)';},2000);
+    btn.textContent='✓ Copiado!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='⧉ Copiar Prompt de Identidade';btn.classList.remove('copied');},2000);
   });
 }
 
+// ===== PROMPT TYPE =====
+function setPType(card,type){
+  if(card==='corpo') corpoType=type;
+  else rostoType=type;
+
+  // Update active button
+  const cardEl=document.querySelector(`[onclick="copyPrompt('${card}')"]`).closest('.prompt-card');
+  cardEl.querySelectorAll('.ptype-btn').forEach((b,i)=>b.classList.toggle('active',['full','short','custom'][i]===type));
+
+  updatePrompts();
+}
+
 function updatePrompts(){
-  const modelId=document.getElementById('promptModelSel')?.value;
-  const model=savedModels.find(m=>m.id==modelId);
-  const badges={full:'Base Completo',short:'Reduzido',custom:'Personalizado'};
-  const bclass={full:'badge-full',short:'badge-short',custom:'badge-custom'};
-  let ct,rt;
-  if(corpoType==='full')ct=PROMPT_CORPO_FULL;
-  else if(corpoType==='short')ct=PROMPT_CORPO_SHORT;
-  else ct=model?buildCustomCorpo(model):'⚠ Selecione uma modelo para o prompt personalizado.';
-  if(rostoType==='full')rt=PROMPT_ROSTO_FULL;
-  else if(rostoType==='short')rt=PROMPT_ROSTO_SHORT;
-  else rt=model?buildCustomRosto(model):'⚠ Selecione uma modelo para o prompt personalizado.';
-  document.getElementById('corpo-text').textContent=ct;
-  document.getElementById('rosto-text').textContent=rt;
-  document.getElementById('corpo-badge').textContent=badges[corpoType];
-  document.getElementById('corpo-badge').className='badge '+bclass[corpoType];
-  document.getElementById('rosto-badge').textContent=badges[rostoType];
-  document.getElementById('rosto-badge').className='badge '+bclass[rostoType];
+  const id=document.getElementById('promptModelSel')?.value;
+  const m=id?savedModels.find(x=>x.id==id):null;
+
+  // CORPO
+  let corpoText,rostText;
+  const badgeMap={full:'Base Completo',short:'Reduzido',custom:'Personalizado'};
+  const badgeClass={full:'badge-full',short:'badge-short',custom:'badge-custom'};
+
+  if(corpoType==='full') corpoText=PROMPT_CORPO_FULL;
+  else if(corpoType==='short') corpoText=PROMPT_CORPO_SHORT;
+  else corpoText=m?buildCustomCorpo(m):'⚠ Selecione uma modelo para o prompt personalizado.';
+
+  if(rostoType==='full') rostText=PROMPT_ROSTO_FULL;
+  else if(rostoType==='short') rostText=PROMPT_ROSTO_SHORT;
+  else rostText=m?buildCustomRosto(m):'⚠ Selecione uma modelo para o prompt personalizado.';
+
+  const cEl=document.getElementById('corpo-text');
+  const rEl=document.getElementById('rosto-text');
+  if(cEl) cEl.textContent=corpoText;
+  if(rEl) rEl.textContent=rostText;
+
+  const cb=document.getElementById('corpo-badge');
+  const rb=document.getElementById('rosto-badge');
+  if(cb){cb.textContent=badgeMap[corpoType];cb.className='badge '+badgeClass[corpoType];}
+  if(rb){rb.textContent=badgeMap[rostoType];rb.className='badge '+badgeClass[rostoType];}
 }
 
 function buildCustomCorpo(m){
   const d=m.data;
-  const c=[d.altura&&`Height: ${d.altura}`,d.biotipo&&`Body type: ${d.biotipo}`,d.proporcao&&`Proportion: ${d.proporcao}`,d.cintura&&`Waist: ${d.cintura}`,d.quadril&&`Hips: ${d.quadril}`,d.pernas&&`Legs: ${d.pernas}`,d.bracos&&`Arms: ${d.bracos}`,d.ombros&&`Shoulders: ${d.ombros}`,d.postura&&`Posture: ${d.postura}`].filter(Boolean).join('. ');
+  const c=[
+    d.altura&&`${d.altura} tall`,
+    d.biotipo&&`${d.biotipo.toLowerCase()} body type`,
+    d.proporcao&&`${d.proporcao.toLowerCase()} proportions`,
+    d.cintura&&`${d.cintura.toLowerCase()} waist`,
+    d.quadril&&`${d.quadril.toLowerCase()} hips`,
+    d.pernas&&`${d.pernas.toLowerCase()} legs`,
+    d.bracos&&`${d.bracos.toLowerCase()} arms`,
+    d.ombros&&`${d.ombros.toLowerCase()} shoulders`,
+    d.postura&&`${d.postura.toLowerCase()} posture`,
+  ].filter(Boolean).join(', ');
   return `Ultra-realistic full body character model sheet of the SAME female influencer: ${m.name}.\n\nPhysical profile: ${c}.\n\nCreate a single image with three aligned full-body views side by side: 1) Front view  2) Left profile  3) Back view. All perfectly aligned, same scale, exact proportions. Neutral anatomical pose. No exaggeration, no stylization.\n\nClothing: Neutral beige short-sleeve top, high-waisted black fitted shorts. No transparency. No cleavage. Barefoot.\n\nStudio white background. Flat soft lighting. 8K resolution. Professional model turnaround sheet.`;
 }
 
 function buildCustomRosto(m){
   const d=m.data;
-  const c=[d.idade&&`apparent age ${d.idade}`,d.etnia&&`${d.etnia} ethnicity`,d.formato_rosto&&`${d.formato_rosto} face shape`,d.tom_pele&&`${d.tom_pele} skin tone`,d.tipo_pele&&`${d.tipo_pele} skin`,d.formato_olhos&&`${d.formato_olhos} eyes`,d.cor_olhos&&`${d.cor_olhos} eye color`,d.sobrancelha&&`${d.sobrancelha} eyebrows`,d.nariz&&`${d.nariz} nose`,d.labios&&`${d.labios} lips`,d.cabelo_cor&&`${d.cabelo_cor} hair`,d.cabelo_comp&&`${d.cabelo_comp} length`,d.cabelo_tex&&`${d.cabelo_tex} texture`].filter(Boolean).join(', ');
+  const c=[
+    d.idade&&`apparent age ${d.idade}`,
+    d.etnia&&`${d.etnia.toLowerCase()} ethnicity`,
+    d.formato_rosto&&`${d.formato_rosto.toLowerCase()} face shape`,
+    d.tom_pele&&`${d.tom_pele.toLowerCase()} skin tone`,
+    d.tipo_pele&&`${d.tipo_pele.toLowerCase()} skin`,
+    d.formato_olhos&&`${d.formato_olhos.toLowerCase()} eyes`,
+    d.cor_olhos&&`${d.cor_olhos.toLowerCase()} eye color`,
+    d.sobrancelha&&`${d.sobrancelha.toLowerCase()} eyebrows`,
+    d.nariz&&`${d.nariz.toLowerCase()} nose`,
+    d.labios&&`${d.labios.toLowerCase()} lips`,
+    d.cabelo_cor&&`${d.cabelo_cor.toLowerCase()} hair`,
+    d.cabelo_comp&&`${d.cabelo_comp.toLowerCase()} length`,
+    d.cabelo_tex&&`${d.cabelo_tex.toLowerCase()} texture`,
+  ].filter(Boolean).join(', ');
   return `Ultra-realistic facial reference contact sheet of ${m.name}: female influencer with ${c}.\n\nLayout: 9-frame contact sheet (3x3 grid). Neutral studio background. Consistent lighting, makeup and hairstyle across all frames.\n\nAngles: Frame 1: Front neutral | Frame 2: 45° left | Frame 3: 45° right | Frame 4: Full left profile | Frame 5: Full right profile | Frame 6: Chin down | Frame 7: Chin up | Frame 8: Over-shoulder | Frame 9: Natural smile.\n\n85mm portrait lens. Studio softbox lighting. 8K resolution. Ultra-realistic skin detail. Soft glam makeup. Preserve exact facial identity.`;
 }
 
 function copyPrompt(card){
   const txt=document.getElementById(card+'-text').textContent;
+  if(!txt) return;
   navigator.clipboard.writeText(txt).then(()=>{
     const btn=document.getElementById('copy-'+card);
     const orig=btn.textContent;
@@ -1360,7 +1409,7 @@ function getFormData(){
   const d={};
   [...ROSTO_FIELDS,...CORPO_FIELDS].forEach(f=>{
     const el=document.getElementById('field_'+f.key);
-    if(el)d[f.key]=el.value;
+    if(el) d[f.key]=el.value;
   });
   return d;
 }
@@ -1380,13 +1429,14 @@ function clearForm(){
   document.getElementById('modelName').value='';
   [...ROSTO_FIELDS,...CORPO_FIELDS].forEach(f=>{
     const el=document.getElementById('field_'+f.key);
-    if(el)el.value='';
+    if(el) el.value='';
   });
+  showToast('Formulário limpo.');
 }
 
 function deleteModel(id,e){
   e.stopPropagation();
-  if(!confirm('Excluir esta modelo?'))return;
+  if(!confirm('Excluir esta modelo?')) return;
   savedModels=savedModels.filter(m=>m.id!==id);
   localStorage.setItem('ms_models',JSON.stringify(savedModels));
   updateSelects();renderModels();
@@ -1395,14 +1445,27 @@ function deleteModel(id,e){
 
 function loadModel(id){
   const m=savedModels.find(x=>x.id===id);
-  if(!m)return;
+  if(!m) return;
   document.getElementById('modelName').value=m.name;
+  // Switch to suggestive mode for better UX
+  currentMode='suggestive';
+  buildFields(ROSTO_FIELDS,'grid-rosto');
+  buildFields(CORPO_FIELDS,'grid-corpo');
+  document.querySelectorAll('.mode-btn').forEach((b,i)=>b.classList.toggle('active',i===1));
   [...ROSTO_FIELDS,...CORPO_FIELDS].forEach(f=>{
     const el=document.getElementById('field_'+f.key);
-    if(el&&m.data[f.key])el.value=m.data[f.key];
+    if(el&&m.data[f.key]) el.value=m.data[f.key];
   });
   setTab('create');
   showToast(`"${m.name}" carregada!`);
+}
+
+// Avatar color by name hash
+function nameToColor(name){
+  let h=0;
+  for(let i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))&0xffffffff;
+  const hue=(h&0xff)/255*360;
+  return `hsl(${hue},60%,55%)`;
 }
 
 function renderModels(){
@@ -1413,8 +1476,8 @@ function renderModels(){
   }
   g.innerHTML=savedModels.map(m=>`
     <div class="model-card" onclick="loadModel(${m.id})">
-      <button class="model-card-del" onclick="deleteModel(${m.id},event)">×</button>
-      <div class="model-avatar">${m.name[0].toUpperCase()}</div>
+      <button class="model-card-del" onclick="deleteModel(${m.id},event)" title="Excluir">×</button>
+      <div class="model-avatar" style="background:linear-gradient(135deg,${nameToColor(m.name)},${nameToColor(m.name+'x')})">${m.name[0].toUpperCase()}</div>
       <div class="model-card-name">${m.name}</div>
       <div class="model-card-desc">${[m.data.etnia,m.data.idade].filter(Boolean).join(' · ')}<br>${[m.data.biotipo,m.data.cabelo_cor].filter(Boolean).join(' · ')}</div>
       <div class="model-card-date">${m.createdAt}</div>
@@ -1424,17 +1487,18 @@ function renderModels(){
 function updateSelects(){
   ['sceneModelSel','promptModelSel','identityModelSel'].forEach(id=>{
     const s=document.getElementById(id);
-    if(!s)return;
+    if(!s) return;
     const prev=s.value;
-    s.innerHTML='<option value="">— Nenhuma —</option>'+savedModels.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
-    if(prev)s.value=prev;
+    const emptyLabel=id==='identityModelSel'?'— Selecione uma modelo —':'— Nenhuma —';
+    s.innerHTML=`<option value="">${emptyLabel}</option>`+savedModels.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
+    if(prev) s.value=prev;
   });
 }
 
 // ===== STYLES =====
 function previewStyleImg(e){
   const f=e.target.files[0];
-  if(!f)return;
+  if(!f) return;
   const r=new FileReader();
   r.onload=ev=>{
     const img=document.getElementById('styleImgPreview');
@@ -1466,7 +1530,7 @@ function clearStyleForm(){
 
 function deleteStyle(id,e){
   e.stopPropagation();
-  if(!confirm('Excluir este estilo?'))return;
+  if(!confirm('Excluir este estilo?')) return;
   savedStyles=savedStyles.filter(s=>s.id!==id);
   localStorage.setItem('ms_styles',JSON.stringify(savedStyles));
   renderStyles();
@@ -1475,13 +1539,14 @@ function deleteStyle(id,e){
 
 function viewStyle(id){
   const s=savedStyles.find(x=>x.id===id);
-  if(!s)return;
+  if(!s) return;
   document.getElementById('styleViewTitle').innerHTML=`🖼 <span>${s.name}</span>`;
   const img=document.getElementById('styleViewImg');
   if(s.img){img.src=s.img;img.style.display='block';}else{img.style.display='none';}
   document.getElementById('styleViewScene').textContent=s.scene;
-  document.getElementById('styleViewFull').textContent=PROMPT_CONTENT_BASE+s.scene;
-  currentStyleScene=PROMPT_CONTENT_BASE+s.scene;
+  const full=PROMPT_CONTENT_BASE+s.scene;
+  document.getElementById('styleViewFull').textContent=full;
+  currentStyleScene=full;
   document.getElementById('modal-style-view').classList.add('open');
 }
 
@@ -1498,7 +1563,9 @@ function renderStyles(){
   g.innerHTML=savedStyles.map(s=>`
     <div class="style-card">
       <button class="style-card-del" onclick="deleteStyle(${s.id},event)">×</button>
-      ${s.img?`<img class="style-card-img" src="${s.img}" alt="${s.name}">`:`<div class="style-card-img-placeholder"><div style="font-size:32px;">🖼</div><div>${s.name}</div></div>`}
+      ${s.img
+        ?`<img class="style-card-img" src="${s.img}" alt="${s.name}">`
+        :`<div class="style-card-img-placeholder"><div style="font-size:32px;">🖼</div><div>${s.name}</div></div>`}
       <div class="style-card-body">
         <div class="style-card-name">${s.name}</div>
         ${s.tags.length?`<div class="style-card-tags">${s.tags.slice(0,3).map(t=>`<span class="style-tag">${t}</span>`).join('')}</div>`:''}
@@ -1510,9 +1577,25 @@ function renderStyles(){
 // ===== TOAST =====
 function showToast(msg){
   const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
+  t.textContent=msg;
+  t.classList.remove('show');
+  void t.offsetWidth; // reflow to restart animation
+  t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2800);
 }
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',e=>{if(e.target===o) o.classList.remove('open');});
+});
+
+// Keyboard: ESC closes modals
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal-overlay.open').forEach(o=>o.classList.remove('open'));
+    closeSidebar();
+  }
+});
 
 init();
 </script>
