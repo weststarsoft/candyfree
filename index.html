@@ -703,17 +703,12 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
 
     <!-- PROMPTS DE ROSTO + CORPO -->
 
-    <div class="prompt-cards">
-      <!-- CORPO -->
+    <!-- CORPO — linha única -->
+    <div class="prompt-cards" style="grid-template-columns:1fr;margin-bottom:1.25rem;">
       <div class="prompt-card">
         <div class="prompt-card-header">
           <div class="prompt-card-title">🧍 Corpo</div>
-          <span class="badge badge-full" id="corpo-badge">Base Completo</span>
-        </div>
-        <div class="ptype-btns">
-          <button class="ptype-btn active" onclick="setPType('corpo','full')">Completo</button>
-          <button class="ptype-btn" onclick="setPType('corpo','short')">Reduzido</button>
-          <button class="ptype-btn" onclick="setPType('corpo','custom')">Personalizado</button>
+          <span class="badge badge-full">Base Completo</span>
         </div>
         <div class="prompt-body">
           <div class="prompt-text" id="corpo-text"></div>
@@ -722,22 +717,40 @@ body{font-family:'DM Sans',sans-serif;background:#f0eef8;color:var(--text);min-h
           <button class="copy-btn" onclick="copyPrompt('corpo')" id="copy-corpo">⧉ Copiar</button>
         </div>
       </div>
-      <!-- ROSTO -->
+    </div>
+
+    <!-- ROSTO A + B — side by side -->
+    <div class="prompt-cards">
+      <!-- ROSTO A -->
       <div class="prompt-card">
         <div class="prompt-card-header">
-          <div class="prompt-card-title">👤 Rosto</div>
-          <span class="badge badge-full" id="rosto-badge">Base Completo</span>
+          <div class="prompt-card-title">👤 Rosto A</div>
+          <span class="badge badge-full">Identidade</span>
         </div>
-        <div class="ptype-btns">
-          <button class="ptype-btn active" onclick="setPType('rosto','full')">Completo</button>
-          <button class="ptype-btn" onclick="setPType('rosto','short')">Reduzido</button>
-          <button class="ptype-btn" onclick="setPType('rosto','custom')">Personalizado</button>
+        <div style="padding:0.5rem 1.25rem 0.25rem;border-bottom:1px solid var(--border-subtle);">
+          <div style="font-size:11px;color:var(--text-muted);letter-spacing:0.5px;">6 frames técnicos · Validação de identidade</div>
         </div>
         <div class="prompt-body">
-          <div class="prompt-text" id="rosto-text"></div>
+          <div class="prompt-text" id="rosto-a-text"></div>
         </div>
         <div class="copy-footer">
-          <button class="copy-btn" onclick="copyPrompt('rosto')" id="copy-rosto">⧉ Copiar</button>
+          <button class="copy-btn" onclick="copyPrompt('rosto-a')" id="copy-rosto-a">⧉ Copiar</button>
+        </div>
+      </div>
+      <!-- ROSTO B -->
+      <div class="prompt-card">
+        <div class="prompt-card-header">
+          <div class="prompt-card-title">👤 Rosto B</div>
+          <span class="badge badge-short">Expressão</span>
+        </div>
+        <div style="padding:0.5rem 1.25rem 0.25rem;border-bottom:1px solid var(--border-subtle);">
+          <div style="font-size:11px;color:var(--text-muted);letter-spacing:0.5px;">6 frames criativos · Poses e expressões</div>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text" id="rosto-b-text"></div>
+        </div>
+        <div class="copy-footer">
+          <button class="copy-btn" onclick="copyPrompt('rosto-b')" id="copy-rosto-b">⧉ Copiar</button>
         </div>
       </div>
     </div>
@@ -1100,10 +1113,10 @@ Professional model turnaround sheet.`;
 
 const PROMPT_CORPO_SHORT=`Ultra-realistic full body model sheet, 3 views side by side (front, left profile, back). Same female influencer, exact proportions preserved. Neutral pose, studio white background, flat lighting, 50mm lens, 8K resolution. No stylization, no exaggeration.`;
 
-const PROMPT_ROSTO_FULL=`Ultra-realistic facial reference contact sheet of a young Brazilian female influencer, using the provided reference image strictly for facial identity preservation.
+const PROMPT_ROSTO_A=`Ultra-realistic facial reference contact sheet of a young Brazilian female influencer, using the provided reference image strictly for facial identity preservation.
 
 Layout:
-— 9-frame contact sheet (3x3 grid)
+— 6-frame contact sheet (3x2 grid)
 — Neutral studio background
 — Consistent lighting across all frames
 — Same makeup, same hairstyle, same earrings
@@ -1111,14 +1124,11 @@ Layout:
 
 Angles required:
 Frame 1: Front-facing, neutral expression
-Frame 2: 45-degree left angle
-Frame 3: 45-degree right angle
-Frame 4: Full left profile
-Frame 5: Full right profile
-Frame 6: Slight chin down angle
-Frame 7: Slight chin up angle
-Frame 8: Over-shoulder subtle glance
-Frame 9: Soft natural smile, front-facing
+Frame 2: Face turned 45° left, eyes looking directly into camera
+Frame 3: Face turned 45° right, eyes looking directly into camera
+Frame 4: Full left profile, face completely side-on
+Frame 5: Full right profile, face completely side-on
+Frame 6: Soft natural smile, front-facing
 
 Facial details:
 — Natural skin texture
@@ -1147,7 +1157,49 @@ Important:
 — No exaggerated beautification
 — Maintain realism`;
 
-const PROMPT_ROSTO_SHORT=`Ultra-realistic facial reference sheet, 9-frame contact sheet (3x3 grid). Same female influencer, all angles (front, 45° left/right, profiles, chin up/down, over-shoulder, smile). Studio softbox lighting, 85mm portrait lens, 8K resolution, soft glam makeup. Preserve exact facial identity.`;
+const PROMPT_ROSTO_B=`Ultra-realistic facial expression and angle sheet of a young Brazilian female influencer, using the provided reference image strictly for facial identity preservation.
+
+Layout:
+— 6-frame contact sheet (3x2 grid)
+— Neutral studio background
+— Consistent lighting across all frames
+— Same makeup, same hairstyle, same earrings
+— No outfit changes (focus on face only)
+
+Angles required:
+Frame 1: Chin down, eyes looking up directly into camera
+Frame 2: Chin up, slight head tilt, confident expression
+Frame 3: Over-shoulder glance left, eyes toward camera
+Frame 4: Over-shoulder glance right, eyes toward camera
+Frame 5: Eyes closed, serene and relaxed expression
+Frame 6: Laughing naturally, head slightly back, genuine expression
+
+Facial details:
+— Natural skin texture
+— Visible pores
+— Subtle highlight on cheekbones
+— Balanced influencer makeup (soft glam)
+— Defined brows
+— Neutral lip tone
+— Clean hair framing face
+
+Photography specifications:
+— 85mm portrait lens
+— Studio softbox lighting
+— Even light distribution
+— No harsh shadows
+— Ultra-realistic skin detail
+— High dynamic range
+— 8K resolution
+— Professional beauty photography
+— No distortion
+— Anatomically accurate proportions
+
+Important:
+— Preserve exact facial identity from reference image
+— No facial structure changes
+— No exaggerated beautification
+— Maintain realism`;
 
 const PROMPT_SELFIE_BASE=`Ultra-realistic selfie photo of [NAME]. Front-facing camera perspective, arm slightly extended toward lens. Natural facial expression, relaxed and spontaneous mood. Slight perspective distortion typical of phone lens. Face and upper body clearly visible. No mirror. No reflection. Direct selfie only.
 
@@ -1174,7 +1226,6 @@ const PROMPT_SELFIE_BASE=`Ultra-realistic selfie photo of [NAME]. Front-facing c
 // ===== STATE =====
 let currentMode='manual';
 let corpoType='full';
-let rostoType='full';
 let savedModels=JSON.parse(localStorage.getItem('ms_models')||'[]');
 let savedStyles=JSON.parse(localStorage.getItem('ms_styles')||'[]');
 let apiKey=localStorage.getItem('ms_apikey')||'';
@@ -1454,56 +1505,21 @@ function buildIdentityPrompt(m){
   return `Ultra-realistic digital portrait of ${m.name}. A ${parts.join(', ')}. Virtual influencer, photorealistic, 8K resolution, natural lighting, authentic appearance. No stylization. This is the complete character reference for consistent identity across all generations.`;
 }
 
-// ===== PROMPT TYPE =====
-function setPType(card,type){
-  if(card==='corpo') corpoType=type;
-  else rostoType=type;
-
-  // Update active button
-  const cardEl=document.querySelector(`[onclick="copyPrompt('${card}')"]`).closest('.prompt-card');
-  cardEl.querySelectorAll('.ptype-btn').forEach((b,i)=>b.classList.toggle('active',['full','short','custom'][i]===type));
-
-  updatePrompts();
-}
-
+// ===== PROMPTS =====
 function updatePrompts(){
-  const badgeMap={full:'Base Completo',short:'Reduzido',custom:'Personalizado'};
-  const badgeClass={full:'badge-full',short:'badge-short',custom:'badge-custom'};
-
-  let corpoText,rostText;
-  if(corpoType==='full') corpoText=PROMPT_CORPO_FULL;
-  else if(corpoType==='short') corpoText=PROMPT_CORPO_SHORT;
-  else corpoText='⚠ Modo personalizado desativado.';
-
-  if(rostoType==='full') rostText=PROMPT_ROSTO_FULL;
-  else if(rostoType==='short') rostText=PROMPT_ROSTO_SHORT;
-  else rostText='⚠ Modo personalizado desativado.';
-
   const cEl=document.getElementById('corpo-text');
-  const rEl=document.getElementById('rosto-text');
-  if(cEl) cEl.textContent=corpoText;
-  if(rEl) rEl.textContent=rostText;
-
-  const cb=document.getElementById('corpo-badge');
-  const rb=document.getElementById('rosto-badge');
-  if(cb){cb.textContent=badgeMap[corpoType];cb.className='badge '+badgeClass[corpoType];}
-  if(rb){rb.textContent=badgeMap[rostoType];rb.className='badge '+badgeClass[rostoType];}
-}
-
-function buildCustomCorpo(m){
-  const d=m.data;
-  const c=[d.altura,d.biotipo,d.proporcao,d.cintura,d.quadril,d.pernas,d.bracos,d.ombros,d.postura].filter(Boolean).join(', ');
-  return `Ultra-realistic full body character model sheet of the SAME female influencer: ${m.name}.\n\nPhysical profile: ${c}.\n\nCreate a single image with three aligned full-body views side by side: 1) Front view  2) Left profile  3) Back view. All perfectly aligned, same scale, exact proportions. Neutral anatomical pose. No exaggeration, no stylization.\n\nClothing: Neutral beige short-sleeve top, high-waisted black fitted shorts. No transparency. No cleavage. Barefoot.\n\nStudio white background. Flat soft lighting. 8K resolution. Professional model turnaround sheet.`;
-}
-
-function buildCustomRosto(m){
-  const d=m.data;
-  const c=[d.idade,d.etnia,d.formato_rosto,d.tom_pele,d.tipo_pele,d.formato_olhos,d.cor_olhos,d.sobrancelha,d.nariz,d.labios,d.cabelo_cor,d.cabelo_comp,d.cabelo_tex].filter(Boolean).join(', ');
-  return `Ultra-realistic facial reference contact sheet of ${m.name}: female influencer with ${c}.\n\nLayout: 9-frame contact sheet (3x3 grid). Neutral studio background. Consistent lighting, makeup and hairstyle across all frames.\n\nAngles: Frame 1: Front neutral | Frame 2: 45° left | Frame 3: 45° right | Frame 4: Full left profile | Frame 5: Full right profile | Frame 6: Chin down | Frame 7: Chin up | Frame 8: Over-shoulder | Frame 9: Natural smile.\n\n85mm portrait lens. Studio softbox lighting. 8K resolution. Ultra-realistic skin detail. Soft glam makeup. Preserve exact facial identity.`;
+  const rAEl=document.getElementById('rosto-a-text');
+  const rBEl=document.getElementById('rosto-b-text');
+  if(cEl) cEl.textContent=PROMPT_CORPO_FULL;
+  if(rAEl) rAEl.textContent=PROMPT_ROSTO_A;
+  if(rBEl) rBEl.textContent=PROMPT_ROSTO_B;
 }
 
 function copyPrompt(card){
-  const txt=document.getElementById(card+'-text').textContent;
+  let txt;
+  if(card==='corpo') txt=document.getElementById('corpo-text').textContent;
+  else if(card==='rosto-a') txt=document.getElementById('rosto-a-text').textContent;
+  else if(card==='rosto-b') txt=document.getElementById('rosto-b-text').textContent;
   if(!txt) return;
   navigator.clipboard.writeText(txt).then(()=>{
     const btn=document.getElementById('copy-'+card);
